@@ -2,7 +2,7 @@
 import pathlib, struct, sys, zipfile
 binary = pathlib.Path(sys.argv[1])
 root = pathlib.Path(__file__).resolve().parent.parent
-output = root / 'releases/Aulamix250-0.1.0-Windows-x64.zip'
+output = root / 'releases/Aulamix250-0.2.0-Windows-x64.zip'
 data = binary.read_bytes()
 assert data[:2] == b'MZ', 'Not a PE file'
 pe = struct.unpack_from('<I', data, 0x3c)[0]

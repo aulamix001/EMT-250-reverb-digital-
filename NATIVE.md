@@ -1,8 +1,10 @@
-# Aulamix 250 VST3 — experimental 0.1.0
+# Aulamix 250 VST3 — experimental 0.2.0
 
 Native stereo VST3 with 30 mapped presets and six independent, original DSP approximations. Not the EMT/UAD DSP, not an exact sonic emulation. Reverb/Space use a damped feedback delay bank; Chorus uses four slowly random-modulated taps; Phase combines fixed and variable delays; Delay has independent L/R taps without feedback; Echo uses mono feedback at 0.9 with damping and predelay outside the loop.
 
-**The native version currently uses the host's generic parameter editor. The photorealistic mockup and web preset browser are not embedded in the VST3.** Select presets using `Preset / Tags`; category tags appear in the preset names. The separate web prototype provides tag filtering, favorites and custom preset management.
+**Windows 0.2.0 includes a native graphical editor**, fixed at 1186×570: textured dark panel, four shaded levers, LED scales, red rack ear, toolbar, mode buttons, output switch and Dry/Wet. It is a procedural recreation based on the supplied reference, **not a verified pixel-identical clone**. Linux still uses the generic host editor.
+
+Click the preset name for a separate movable floating window with search, 13 tag filters, preset list and session favorites. Selecting a factory preset updates the visible levers and the audio parameter mailbox, and sends VST3 edit gestures to the host. Save exports a `.a250` settings file; the toolbar `...` imports one. Factory delete/rename are protected. Copy/Paste and A/B compare parameter snapshots. LEARN directs users to host automation; no MIDI-learn implementation. Favorites are retained for the lifetime of the open editor, not persisted across closing it.
 
 All photographed factory values are generated from `model.js` by `node scripts/native-presets.js`. `presets.json` and `MAPEAMENTO.csv` are reviewable exports. Delay R values remain provisional for Dual Delay, Hands Down Double and Jimmy Jam Delay. Large Courtyard has no supplied control photo and is not included. Dry/Wet positions are approximate. Wet Solo and Noise are instance controls enabled by default.
 
@@ -21,7 +23,7 @@ Linux output: `build/VST3/Release/Aulamix250.vst3`. Copy the entire bundle to `~
 
 ## Current limits
 
-Experimental first build: no DAW listening test in this environment, no custom native editor, no exact converter/saturation emulation, no MIDI learn, no mode-specific state memory. Parameters are stepped/updated at block boundaries; sample-accurate automation and smoothing remain future work. Native L/R delay times are normalized parameters with 64 positions (0–315 ms in steps of 5). The first three generic fader names remain static; refer to the mapping table for their active functions. Inactive faders are ignored by DSP.
+Experimental first build: no DAW listening test in this environment, no exact converter/saturation emulation, no MIDI learn, no mode-specific state memory. Parameters are stepped/updated at block boundaries; sample-accurate automation and smoothing remain future work. Native L/R delay times are normalized parameters with 64 positions (0–315 ms in steps of 5). The first three generic fader names remain static; refer to the mapping table for their active functions. Inactive faders are ignored by DSP.
 
 The GitHub workflow compiles Linux and Windows artifacts on pushes to main. Tagged pushes also upload release assets using the workflow token. A remote workflow has not been validated until its actual run succeeds. Do not infer Windows validation from the local Linux build.
 
@@ -34,3 +36,9 @@ SDK validator: 47 passed, 0 failed. DSP impulse tests: six modes emit finite, no
 `releases/Aulamix250-0.1.0-Windows-x64.zip` contains the standard VST3 Windows bundle and installation notes. Built with Debian MinGW-w64 GCC 14.2 (posix). C/C++ and winpthread runtimes linked statically; imports limited to Windows KERNEL32, msvcrt, ole32, USER32. PE32+ AMD64 and GetPluginFactory/InitDll/ExitDll exports verified. No Windows execution or DAW loading test was performed. Linux validator results do not establish Windows runtime compatibility.
 
 To reproduce on Linux, extract the MinGW packages to a prefix and set MINGW_ROOT, then configure with `-DCMAKE_TOOLCHAIN_FILE=cmake/windows-mingw.cmake`. Cross builds omit the unused SDK dataexchange helper (MinGW lacks std::aligned_alloc) and cosmetic Windows folder-icon commands. Run `python scripts/package-windows.py /path/to/build/VST3/Aulamix250.vst3` to package and inspect the PE headers.
+
+## Windows graphical build 0.2.0
+
+New native Win32/GDI view returned by IEditController::createView for HWND. Host parameters and UI exchange values through atomic mailboxes; repaint uses a timer. Float preset window is owned by the plugin view and closes on view removal. Inactive faders are ignored in Phase/Chorus/Space. Delay channel selection updates the coarse/fine display. UI-to-host parameter edits use beginEdit/performEdit/endEdit.
+
+Cross-compiled Windows x64, PE format and required exports checked. Windows GUI appearance, mouse interaction and DAW loading **have not been tested on a running Windows system**. Linux SDK validator and DSP tests verify the processor, not the Windows GUI. No claim of pixel-identical or complete GUI runtime validation is made.

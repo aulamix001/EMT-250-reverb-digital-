@@ -1,4 +1,4 @@
-Aulamix 250 — VST3 Windows 64 bits (experimental 0.1.0)
+Aulamix 250 — VST3 Windows 64 bits (experimental 0.2.0)
 
 1. Feche a DAW.
 2. Copie a pasta inteira Aulamix250.vst3 para:
@@ -9,8 +9,11 @@ Aulamix 250 — VST3 Windows 64 bits (experimental 0.1.0)
 A pasta .vst3 contém Contents\x86_64-win\Aulamix250.vst3.
 Não copie apenas o arquivo interno e não renomeie o ZIP para .vst3.
 
-Esta é uma versão experimental: DSP próprio aproximado e editor genérico da DAW.
-A interface visual das imagens ainda não está integrada ao plugin nativo.
+Esta versão inclui editor gráfico nativo e janela flutuante de presets.
+Selecione a interface do plugin na DAW, em vez da visualização genérica de parâmetros.
+Clique no nome do preset para abrir a biblioteca. SAVE salva .a250; ... importa.
+A interface é uma recriação aproximada da referência, sem verificação pixel a pixel.
+O DSP continua sendo uma implementação própria aproximada.
 30 presets; os tempos R de Dual Delay, Hands Down Double e Jimmy Jam Delay
 continuam provisórios porque as fotos não mostram esse canal.
 

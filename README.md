@@ -1,8 +1,8 @@
-Download Windows x64 VST3: [Aulamix250-0.1.0-Windows-x64.zip](releases/Aulamix250-0.1.0-Windows-x64.zip). Instalação: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Versão experimental, editor genérico da DAW; ainda sem teste de execução em Windows.
+Download Windows x64 VST3: [Aulamix250-0.2.0-Windows-x64.zip](releases/Aulamix250-0.2.0-Windows-x64.zip). Instalação: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Versão 0.2.0 com editor gráfico nativo e janela flutuante de presets; ainda sem teste de execução em Windows.
 
 # Aulamix 250 — VST3 e biblioteca de presets
 
-Versão nativa experimental: consulte [NATIVE.md](NATIVE.md). Contém seis modos DSP aproximados próprios e 30 presets mapeados. O VST3 usa o editor genérico da DAW; a interface abaixo é um protótipo web separado. Não é uma reprodução exata do algoritmo EMT/UAD.
+Versão nativa experimental: consulte [NATIVE.md](NATIVE.md). Contém seis modos DSP aproximados próprios e 30 presets mapeados. O VST3 Windows 0.2.0 possui interface gráfica nativa; Linux conserva o editor genérico. A interface web abaixo é um protótipo separado. Não é uma reprodução exata do algoritmo EMT/UAD.
 
 Tabela consolidada: [MAPEAMENTO.csv](MAPEAMENTO.csv). Dados: [presets.json](presets.json). `npm run export` atualiza ambos; `node scripts/native-presets.js` atualiza os presets nativos.
 

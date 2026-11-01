@@ -1,0 +1,12 @@
+Windows x64 cross-build 0.2.0
+PE headers/exports and ZIP integrity verified. Windows GUI runtime test NOT performed.
+/workspace/windows-build/VST3/Aulamix250.vst3:     file format pei-x86-64
+	DLL Name: comdlg32.dll
+	DLL Name: GDI32.dll
+	DLL Name: KERNEL32.dll
+	DLL Name: msvcrt.dll
+	DLL Name: ole32.dll
+	DLL Name: USER32.dll
+	[   0] +base[   1]  0000 ExitDll
+	[   1] +base[   2]  0001 GetPluginFactory
+	[   2] +base[   3]  0002 InitDll

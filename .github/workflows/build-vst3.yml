@@ -35,10 +35,10 @@ jobs:
       - name: Package Windows release
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path build/VST3/Release/Aulamix250.vst3 -DestinationPath Aulamix250-Windows-x64.zip
+        run: Compress-Archive -Path build/VST3/Release/Aulamix250.vst3,NATIVE.md,licenses -DestinationPath Aulamix250-Windows-x64.zip
       - name: Package Linux release
         if: runner.os == 'Linux'
-        run: tar -C build/VST3/Release -czf Aulamix250-Linux-x64.tar.gz Aulamix250.vst3
+        run: tar -czf Aulamix250-Linux-x64.tar.gz -C build/VST3/Release Aulamix250.vst3 -C "${{ github.workspace }}" NATIVE.md licenses
       - name: Publish tagged release
         if: startsWith(github.ref, 'refs/tags/v')
         env:

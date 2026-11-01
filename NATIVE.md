@@ -1,3 +1,7 @@
+# EMT-250 Reverb — 0.2.1
+
+Renamed the DAW factory name, Windows bundle, panel and preset browser to EMT-250 Reverb. Class ID and parameter IDs unchanged to preserve existing sessions and presets. Remove the old Aulamix250.vst3 installation before rescanning. Current bundle: EMT-250 Reverb.vst3.
+
 # Aulamix 250 VST3 — experimental 0.2.0
 
 Native stereo VST3 with 30 mapped presets and six independent, original DSP approximations. Not the EMT/UAD DSP, not an exact sonic emulation. Reverb/Space use a damped feedback delay bank; Chorus uses four slowly random-modulated taps; Phase combines fixed and variable delays; Delay has independent L/R taps without feedback; Echo uses mono feedback at 0.9 with damping and predelay outside the loop.

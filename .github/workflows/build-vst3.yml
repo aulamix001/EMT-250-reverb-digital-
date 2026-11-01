@@ -30,18 +30,18 @@ jobs:
       - run: ctest --test-dir build -C Release --output-on-failure
       - uses: actions/upload-artifact@v4
         with:
-          name: Aulamix250-VST3-${{ runner.os }}
-          path: build/VST3/Release/Aulamix250.vst3
+          name: EMT-250-Reverb-VST3-${{ runner.os }}
+          path: build/VST3/Release/EMT-250 Reverb.vst3
       - name: Package Windows release
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path build/VST3/Release/Aulamix250.vst3,NATIVE.md,licenses -DestinationPath Aulamix250-Windows-x64.zip
+        run: Compress-Archive -Path 'build/VST3/Release/EMT-250 Reverb.vst3',NATIVE.md,licenses -DestinationPath EMT-250-Reverb-Windows-x64.zip
       - name: Package Linux release
         if: runner.os == 'Linux'
-        run: tar -czf Aulamix250-Linux-x64.tar.gz -C build/VST3/Release Aulamix250.vst3 -C "${{ github.workspace }}" NATIVE.md licenses
+        run: tar -czf EMT-250-Reverb-Linux-x64.tar.gz -C build/VST3/Release "EMT-250 Reverb.vst3" -C "${{ github.workspace }}" NATIVE.md licenses
       - name: Publish tagged release
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
-        run: gh release upload "$GITHUB_REF_NAME" Aulamix250-* --clobber || { gh release create "$GITHUB_REF_NAME" Aulamix250-* --title "$GITHUB_REF_NAME" --notes 'Experimental VST3. Own approximate DSP; generic host editor. See NATIVE.md.'; }
+        run: gh release upload "$GITHUB_REF_NAME" EMT-250-Reverb-* --clobber || { gh release create "$GITHUB_REF_NAME" EMT-250-Reverb-* --title "$GITHUB_REF_NAME" --notes 'Experimental VST3. Own approximate DSP; generic host editor. See NATIVE.md.'; }

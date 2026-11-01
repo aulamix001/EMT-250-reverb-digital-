@@ -1,0 +1,1549 @@
+{
+  "schemaVersion": 1,
+  "description": "Mapeamento de controles pelas fotos e manual. Sem DSP. Tempos R desconhecidos exportados como null. Wet Solo e Noise globais; ambos iniciam ligados.",
+  "tags": {
+    "Reverb": [
+      "Blessers Barn",
+      "Carlos Caverns",
+      "Clean Space",
+      "Default",
+      "Drum Room",
+      "Female Vox Plate",
+      "In da Club",
+      "Just a Touch",
+      "Large Room",
+      "Male Vox Plate",
+      "Ocean Way",
+      "Small Room",
+      "Snare Verb",
+      "Some Depth",
+      "Soundstage"
+    ],
+    "Best Of": [
+      "Blessers Barn",
+      "Carlos Caverns",
+      "Chorus I",
+      "Chorus III",
+      "Drum Room",
+      "Female Vox Plate",
+      "In da Club",
+      "Male Vox Plate",
+      "Muted Echo",
+      "Rear Outputs",
+      "Some Depth",
+      "Subtle Bloom"
+    ],
+    "Long": [
+      "Blessers Barn",
+      "Carlos Caverns",
+      "Clean Space",
+      "Default",
+      "Delayed Spacing",
+      "Full Bloom",
+      "In da Club",
+      "Male Vox Plate",
+      "Ocean Way",
+      "Subtle Bloom"
+    ],
+    "Short": [
+      "Drum Room",
+      "Female Vox Plate",
+      "Just a Touch",
+      "Large Room",
+      "Small Room",
+      "Snare Verb",
+      "Some Depth",
+      "Soundstage"
+    ],
+    "Guitar": [
+      "Batman Echo",
+      "Carlos Caverns",
+      "Chorus I",
+      "Chorus II",
+      "Chorus III",
+      "Chorus IV",
+      "Slapback"
+    ],
+    "Vocal": [
+      "Blessers Barn",
+      "Carlos Caverns",
+      "Clean Space",
+      "Female Vox Plate",
+      "In da Club",
+      "Male Vox Plate"
+    ],
+    "Keys": [
+      "Chorus I",
+      "Chorus II",
+      "Chorus III",
+      "Chorus IV",
+      "Rear Outputs",
+      "Some Depth"
+    ],
+    "Drums": [
+      "Drum Room",
+      "Large Room",
+      "Ocean Way",
+      "Small Room",
+      "Snare Verb",
+      "Soundstage"
+    ],
+    "Delay": [
+      "Delayed Spacing",
+      "Dual Delay",
+      "Hands Down Double",
+      "Jimmy Jam Delay"
+    ],
+    "Space": [
+      "Clean Space",
+      "Delayed Spacing",
+      "Full Bloom",
+      "Subtle Bloom"
+    ],
+    "Echo": [
+      "Batman Echo",
+      "Bouncy",
+      "Muted Echo",
+      "Slapback"
+    ],
+    "Chorus": [
+      "Chorus I",
+      "Chorus II",
+      "Chorus III",
+      "Chorus IV"
+    ],
+    "Phase": [
+      "Rear Outputs"
+    ]
+  },
+  "presets": [
+    {
+      "name": "Batman Echo",
+      "tags": [
+        "Guitar",
+        "Echo"
+      ],
+      "mode": "Echo",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 15,
+          "value": 300
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 3,
+          "value": 15
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Input on",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": {
+        "repeat": 315,
+        "first": 335
+      },
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "",
+      "route": "Wet mono → mute de entrada → predelay → echo mono com feedback ≈0,9 por volta e damping HF. Predelay fora do feedback; repetições até 315 ms, primeira até 375 ms."
+    },
+    {
+      "name": "Blessers Barn",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Long",
+        "Vocal"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 6,
+          "value": 1.8
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 1,
+          "value": 1
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 2,
+          "value": 0.5
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.62,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Bouncy",
+      "tags": [
+        "Echo"
+      ],
+      "mode": "Echo",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 7,
+          "value": 140
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 2,
+          "value": 10
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 2,
+          "value": 0.5
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Input on",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": {
+        "repeat": 150,
+        "first": 150
+      },
+      "mixPosition": 0.7,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → mute de entrada → predelay → echo mono com feedback ≈0,9 por volta e damping HF. Predelay fora do feedback; repetições até 315 ms, primeira até 375 ms."
+    },
+    {
+      "name": "Carlos Caverns",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Long",
+        "Guitar",
+        "Vocal"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 14,
+          "value": 4
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 2,
+          "value": 0.5
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 2,
+          "value": 40
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 40,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Chorus I",
+      "tags": [
+        "Best Of",
+        "Guitar",
+        "Keys",
+        "Chorus"
+      ],
+      "mode": "Chorus",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Variação",
+          "active": true,
+          "position": 0,
+          "value": "I"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "",
+      "route": "Wet mono → predelay → quatro delays modulados aleatoriamente. I: FL/FR; II: RL/RR; III: FL+RL / FR+RR; IV: FL+RL+RR / RL+FR−RR. Rear soma mono."
+    },
+    {
+      "name": "Chorus II",
+      "tags": [
+        "Guitar",
+        "Keys",
+        "Chorus"
+      ],
+      "mode": "Chorus",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Variação",
+          "active": true,
+          "position": 1,
+          "value": "II"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "",
+      "route": "Wet mono → predelay → quatro delays modulados aleatoriamente. I: FL/FR; II: RL/RR; III: FL+RL / FR+RR; IV: FL+RL+RR / RL+FR−RR. Rear soma mono."
+    },
+    {
+      "name": "Chorus III",
+      "tags": [
+        "Best Of",
+        "Guitar",
+        "Keys",
+        "Chorus"
+      ],
+      "mode": "Chorus",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Variação",
+          "active": true,
+          "position": 2,
+          "value": "III"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "",
+      "route": "Wet mono → predelay → quatro delays modulados aleatoriamente. I: FL/FR; II: RL/RR; III: FL+RL / FR+RR; IV: FL+RL+RR / RL+FR−RR. Rear soma mono."
+    },
+    {
+      "name": "Chorus IV",
+      "tags": [
+        "Guitar",
+        "Keys",
+        "Chorus"
+      ],
+      "mode": "Chorus",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Variação",
+          "active": true,
+          "position": 3,
+          "value": "IV"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "",
+      "route": "Wet mono → predelay → quatro delays modulados aleatoriamente. I: FL/FR; II: RL/RR; III: FL+RL / FR+RR; IV: FL+RL+RR / RL+FR−RR. Rear soma mono."
+    },
+    {
+      "name": "Clean Space",
+      "tags": [
+        "Reverb",
+        "Long",
+        "Vocal",
+        "Space"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 12,
+          "value": 3.3
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 2,
+          "value": 40
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 40,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Default",
+      "tags": [
+        "Reverb",
+        "Long"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 10,
+          "value": 2.8
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 1,
+          "value": 1
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 2,
+          "value": 0.5
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 2,
+          "value": 40
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 40,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.5,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Delayed Spacing",
+      "tags": [
+        "Long",
+        "Delay",
+        "Space"
+      ],
+      "mode": "Space",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 12,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Inativo",
+          "active": false,
+          "position": 1,
+          "value": null
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 3,
+          "value": 60
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 60,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.6,
+      "mixAccuracy": "visual-estimate",
+      "note": "SPC ativo; tag Delay não determina o modo DSP.",
+      "route": "Wet mono → predelay → Space (~10 s, decaimento uniforme por frequência) → Front L/R ou Rear L/R."
+    },
+    {
+      "name": "Drum Room",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Short",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 1,
+          "value": 0.6
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Dual Delay",
+      "tags": [
+        "Delay"
+      ],
+      "mode": "Delay",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 10,
+          "value": 200
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        },
+        {
+          "control": 3,
+          "label": "Canal de edição",
+          "active": true,
+          "position": 1,
+          "value": "II · L"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": {
+        "left": 200,
+        "right": null
+      },
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "L=200 ms confirmado; R=200 ms provisório, não visível na foto.",
+      "route": "Wet mono → predelay comum → delays L/R independentes, sem feedback. Rear soma a saída em mono. Máximo 375 ms/canal."
+    },
+    {
+      "name": "Female Vox Plate",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Short",
+        "Vocal"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 8,
+          "value": 2.2
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 3,
+          "value": "max"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.6,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Full Bloom",
+      "tags": [
+        "Long",
+        "Space"
+      ],
+      "mode": "Space",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 12,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Inativo",
+          "active": false,
+          "position": 1,
+          "value": null
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "SPC/Space; predelay 0 ms. Faders 1–3 inativos; posições visuais registradas.",
+      "route": "Wet mono → predelay → Space (~10 s, decaimento uniforme por frequência) → Front L/R ou Rear L/R."
+    },
+    {
+      "name": "Hands Down Double",
+      "tags": [
+        "Delay"
+      ],
+      "mode": "Delay",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        },
+        {
+          "control": 3,
+          "label": "Canal de edição",
+          "active": true,
+          "position": 1,
+          "value": "II · L"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": {
+        "left": 0,
+        "right": null
+      },
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "L=0 ms confirmado; R=0 ms provisório, não visível na foto.",
+      "route": "Wet mono → predelay comum → delays L/R independentes, sem feedback. Rear soma a saída em mono. Máximo 375 ms/canal."
+    },
+    {
+      "name": "In da Club",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Long",
+        "Vocal"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 10,
+          "value": 2.8
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 3,
+          "value": 60
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 60,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Jimmy Jam Delay",
+      "tags": [
+        "Delay"
+      ],
+      "mode": "Delay",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 3,
+          "value": 60
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        },
+        {
+          "control": 3,
+          "label": "Canal de edição",
+          "active": true,
+          "position": 1,
+          "value": "II · L"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Stereo",
+      "predelayMs": 0,
+      "delayMs": {
+        "left": 60,
+        "right": null
+      },
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "L=60 ms confirmado; R=60 ms provisório, não visível na foto.",
+      "route": "Wet mono → predelay comum → delays L/R independentes, sem feedback. Rear soma a saída em mono. Máximo 375 ms/canal."
+    },
+    {
+      "name": "Just a Touch",
+      "tags": [
+        "Reverb",
+        "Short"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 5,
+          "value": 1.5
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 2,
+          "value": 0.5
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.3,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Large Room",
+      "tags": [
+        "Reverb",
+        "Short",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 3,
+          "value": 1
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.7,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Male Vox Plate",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Long",
+        "Vocal"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 9,
+          "value": 2.5
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 3,
+          "value": 2
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 3,
+          "value": "max"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.5,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Muted Echo",
+      "tags": [
+        "Best Of",
+        "Echo"
+      ],
+      "mode": "Echo",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 10,
+          "value": 200
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 2,
+          "value": 10
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.25
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Input on",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": {
+        "repeat": 210,
+        "first": 210
+      },
+      "mixPosition": 0.75,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → mute de entrada → predelay → echo mono com feedback ≈0,9 por volta e damping HF. Predelay fora do feedback; repetições até 315 ms, primeira até 375 ms."
+    },
+    {
+      "name": "Ocean Way",
+      "tags": [
+        "Reverb",
+        "Long",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 15,
+          "value": 4.5
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.25
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 3,
+          "value": 60
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 60,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Rear Outputs",
+      "tags": [
+        "Best Of",
+        "Keys",
+        "Phase"
+      ],
+      "mode": "Phase",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Phase · ms",
+          "active": true,
+          "position": 8,
+          "value": 8
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Inativo",
+          "active": false,
+          "position": 2,
+          "value": null
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 1,
+      "mixAccuracy": "endpoint",
+      "note": "PHAS; LED na marca 160 = 8 ms (escala relativa 0–300 → 0–15 ms); Rear; predelay 0 ms.",
+      "route": "Wet mono → predelay → delay fixo 15 ms + variável 0–15 ms → filtro comb. Sem LFO. Rear: mínimo só R, máximo só L."
+    },
+    {
+      "name": "Slapback",
+      "tags": [
+        "Guitar",
+        "Echo"
+      ],
+      "mode": "Echo",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Coarse · ms",
+          "active": true,
+          "position": 2,
+          "value": 40
+        },
+        {
+          "control": 2,
+          "label": "Fine · ms",
+          "active": true,
+          "position": 2,
+          "value": 10
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.25
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Input on",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": {
+        "repeat": 50,
+        "first": 50
+      },
+      "mixPosition": 0.6,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → mute de entrada → predelay → echo mono com feedback ≈0,9 por volta e damping HF. Predelay fora do feedback; repetições até 315 ms, primeira até 375 ms."
+    },
+    {
+      "name": "Small Room",
+      "tags": [
+        "Reverb",
+        "Short",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 0,
+          "value": 0.4
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 2,
+          "value": 1.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.25
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Snare Verb",
+      "tags": [
+        "Reverb",
+        "Short",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 7,
+          "value": 2
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 1,
+          "value": 1
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 3,
+          "value": "max"
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Some Depth",
+      "tags": [
+        "Reverb",
+        "Best Of",
+        "Short",
+        "Keys"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 5,
+          "value": 1.5
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 1,
+          "value": 1
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.25
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Front",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.5,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Soundstage",
+      "tags": [
+        "Reverb",
+        "Short",
+        "Drums"
+      ],
+      "mode": "Reverb",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Decay · s",
+          "active": true,
+          "position": 3,
+          "value": 1
+        },
+        {
+          "control": 2,
+          "label": "LF ×",
+          "active": true,
+          "position": 0,
+          "value": 0.5
+        },
+        {
+          "control": 3,
+          "label": "HF ×",
+          "active": true,
+          "position": 1,
+          "value": 0.33
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 1,
+          "value": 20
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 20,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.65,
+      "mixAccuracy": "visual-estimate",
+      "note": "",
+      "route": "Wet mono → reverb → Front L/R ou Rear L/R; LF a 300 Hz, HF a 6 kHz."
+    },
+    {
+      "name": "Subtle Bloom",
+      "tags": [
+        "Best Of",
+        "Long",
+        "Space"
+      ],
+      "mode": "Space",
+      "faders": [
+        {
+          "control": 1,
+          "label": "Inativo",
+          "active": false,
+          "position": 12,
+          "value": null
+        },
+        {
+          "control": 2,
+          "label": "Inativo",
+          "active": false,
+          "position": 0,
+          "value": null
+        },
+        {
+          "control": 3,
+          "label": "Inativo",
+          "active": false,
+          "position": 1,
+          "value": null
+        },
+        {
+          "control": 4,
+          "label": "Predelay · ms",
+          "active": true,
+          "position": 0,
+          "value": 0
+        }
+      ],
+      "output": "Rear",
+      "predelayMs": 0,
+      "delayMs": null,
+      "echoMs": null,
+      "mixPosition": 0.4,
+      "mixAccuracy": "visual-estimate",
+      "note": "SPC/Space; predelay 0 ms; Rear. Faders 1–3 inativos.",
+      "route": "Wet mono → predelay → Space (~10 s, decaimento uniforme por frequência) → Front L/R ou Rear L/R."
+    }
+  ]
+}

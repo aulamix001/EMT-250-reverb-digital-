@@ -1,0 +1,3 @@
+import {factory,tags} from '../model.js';import {writeFileSync} from 'node:fs';
+const modes=['Reverb','Delay','Phase','Chorus','Echo','Space'];
+writeFileSync('native/Presets.h','#pragma once\nstruct Preset {const char* name; int mode; int f[4]; double mix; bool rear; double left,right;};\nstatic const Preset presets[]={\n'+[...factory].sort((a,b)=>a.name.localeCompare(b.name,'en')).map(p=>`{${JSON.stringify(p.name+' ['+tags.filter(t=>p.tags.includes(t)).join(', ')+']')},${modes.indexOf(p.mode)},{${p.positions.join(',')}},${p.mix},${p.rear},${p.delay?.[0]??200},${p.delay?.[1]??200}}`).join(',\n')+'\n};\n');

@@ -1,0 +1,36 @@
+
+> test
+> node tests/model.test.js
+
+✔ todos os presets respeitam os passos do manual (1.166501ms)
+✔ delay preserva L/R e posições duplicadas selecionam o mesmo canal (0.895651ms)
+✔ serialização omite controles inativos e seletor L/R (0.362014ms)
+✔ curva de mix: extremos e centro do manual (0.144553ms)
+✔ Chorus I–IV seguem as fotos: variação, predelay zero, mix máximo e tags (0.274905ms)
+✔ tag Delay preserva Space e identifica canal direito ainda desconhecido (0.206485ms)
+✔ références Vocal: LEDs de decay, LF, HF et predelay (0.219414ms)
+✔ Vocal completo inclui In da Club e Male Vox Plate conforme LEDs (0.152785ms)
+✔ Long associa presets existentes sem duplicar nem remover Vocal/Delay (0.207707ms)
+✔ Long completo nas fotos: Full Bloom Space e Male Vox Plate compartilhado (0.254195ms)
+✔ Ocean Way e Subtle Bloom seguem referências Long (0.181538ms)
+✔ Echo: tempos coarse/fine, damping e predelay das quatro fotos (0.205443ms)
+✔ Drums: presets confirmados e Ocean Way sem duplicação (0.17609ms)
+✔ Snare Verb e Soundstage completam a tag Drums (0.885837ms)
+✔ Guitar reúne os sete presets da lista sem duplicar registros (0.201787ms)
+✔ Best Of inclui somente os doze nomes confirmados e mantém outros grupos (0.157893ms)
+✔ Rear Outputs: Phase 8 ms, Rear e predelay zero; controles inativos não salvos (0.161388ms)
+✔ Some Depth e Subtle Bloom na sequência Best Of (0.143312ms)
+✔ Space reúne quatro presets; Clean Space continua Reverb e Full Bloom usa mix máximo (0.150092ms)
+✔ Keys contém os seis presets da lista, compartilhados com outras tags (0.182459ms)
+✔ Short associa oito presets e mapeia Just a Touch pelos LEDs (0.218432ms)
+✔ primeira lista Reverb confirma sete registros compartilhados e valores das fotos (0.177652ms)
+✔ todos os presets fazem round-trip dos controles ativos (0.276648ms)
+✔ catálogo único, nomes ordenados e tempos desconhecidos explícitos (8.080493ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22.963094

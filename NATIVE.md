@@ -28,3 +28,9 @@ The GitHub workflow compiles Linux and Windows artifacts on pushes to main. Tagg
 ## Validation of Linux build 0.1.0
 
 SDK validator: 47 passed, 0 failed. DSP impulse tests: six modes emit finite, nonzero output; stereo bypass exact. Catalog: 24 tests passed. No listening/DAW GUI test or Windows build was performed locally. See `releases/validation-linux.txt`.
+
+## Windows x64 cross-build (0.1.0)
+
+`releases/Aulamix250-0.1.0-Windows-x64.zip` contains the standard VST3 Windows bundle and installation notes. Built with Debian MinGW-w64 GCC 14.2 (posix). C/C++ and winpthread runtimes linked statically; imports limited to Windows KERNEL32, msvcrt, ole32, USER32. PE32+ AMD64 and GetPluginFactory/InitDll/ExitDll exports verified. No Windows execution or DAW loading test was performed. Linux validator results do not establish Windows runtime compatibility.
+
+To reproduce on Linux, extract the MinGW packages to a prefix and set MINGW_ROOT, then configure with `-DCMAKE_TOOLCHAIN_FILE=cmake/windows-mingw.cmake`. Cross builds omit the unused SDK dataexchange helper (MinGW lacks std::aligned_alloc) and cosmetic Windows folder-icon commands. Run `python scripts/package-windows.py /path/to/build/VST3/Aulamix250.vst3` to package and inspect the PE headers.

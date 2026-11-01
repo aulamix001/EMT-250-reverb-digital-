@@ -10,6 +10,13 @@ if(NOT VST3_SDK_ROOT)
  message(FATAL_ERROR "Set VST3_SDK_ROOT to Steinberg VST3 SDK v3.8.0_build_66")
 endif()
 add_subdirectory(${VST3_SDK_ROOT} ${CMAKE_BINARY_DIR}/sdk)
+if(MINGW)
+ # SDK dataexchange uses std::aligned_alloc, unavailable in MinGW.
+ # This plugin does not use the optional data exchange helper.
+ get_target_property(sdk_sources sdk SOURCES)
+ list(FILTER sdk_sources EXCLUDE REGEX "utility/dataexchange[.]cpp$")
+ set_property(TARGET sdk PROPERTY SOURCES "${sdk_sources}")
+endif()
 smtg_add_vst3plugin(Aulamix250 native/Plugin.cpp ${VST3_SDK_ROOT}/public.sdk/source/vst/vstsinglecomponenteffect.cpp)
 if(WIN32)
  target_sources(Aulamix250 PRIVATE ${VST3_SDK_ROOT}/public.sdk/source/main/dllmain.cpp)

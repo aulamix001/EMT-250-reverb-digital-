@@ -6,7 +6,7 @@
 inline void uiDiagnostic(const char* format, ...) {
     char line[1024];
     SYSTEMTIME time{};GetLocalTime(&time);
-    int prefix=std::snprintf(line,sizeof(line),"0.3.0 %02u:%02u:%02u pid=%lu tid=%lu ",time.wHour,time.wMinute,time.wSecond,GetCurrentProcessId(),GetCurrentThreadId());
+    int prefix=std::snprintf(line,sizeof(line),"0.4.0 %02u:%02u:%02u pid=%lu tid=%lu ",time.wHour,time.wMinute,time.wSecond,GetCurrentProcessId(),GetCurrentThreadId());
     va_list args;va_start(args,format);std::vsnprintf(line+prefix,sizeof(line)-prefix,format,args);va_end(args);
     OutputDebugStringA(line);
     char directory[MAX_PATH]{};

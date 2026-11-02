@@ -1,10 +1,12 @@
-Download Windows x64 **VST3 + VST2 0.3.0**: [EMT-250-Reverb-0.3.0-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.3.0-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Testado via Wine; a falha informada no REAPER 7.84 x64 ainda requer confirmação nesse host.
+Download Windows x64 **VST3 + VST2 0.4.0**: [EMT-250-Reverb-0.4.0-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.4.0-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Painel redesenhado conforme a última referência, com capas e sanfonas 3D, texturas e suporte a escala sem deformação. Versão gráfica testada via Wine; o usuário confirmou o funcionamento da 0.3.0 no REAPER 7.84 x64.
 
-Captura do painel a 125% em host de teste via Wine: [interface 0.3.0](releases/interface-0.3.0-125.png).
+Captura do painel a 125% em host de teste via Wine: [interface 0.4.0](releases/interface-0.4.0-125.png).
+
+Botão direito no painel: presets, comparação A/B, COPY/PASTE, arquivos `.a250` e INFO. Clique no nome EMT 250 para abrir a biblioteca.
 
 # EMT-250 Reverb — VST3, VST2 e biblioteca de presets
 
-Versão nativa experimental: consulte [NATIVE.md](NATIVE.md). Contém seis modos DSP aproximados próprios e 30 presets mapeados. O VST3 Windows 0.2.0 possui interface gráfica nativa; Linux conserva o editor genérico. A interface web abaixo é um protótipo separado. Não é uma reprodução exata do algoritmo EMT/UAD.
+Versão nativa experimental: consulte [NATIVE.md](NATIVE.md). Contém seis modos DSP aproximados próprios e 30 presets mapeados. VST3 e VST2 Windows compartilham o novo painel; Linux conserva o editor genérico. A interface web abaixo é um protótipo separado. Não é uma reprodução exata do algoritmo EMT/UAD.
 
 Tabela consolidada: [MAPEAMENTO.csv](MAPEAMENTO.csv). Dados: [presets.json](presets.json). `npm run export` atualiza ambos; `node scripts/native-presets.js` atualiza os presets nativos.
 

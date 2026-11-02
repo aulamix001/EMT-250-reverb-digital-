@@ -1,0 +1,4 @@
+1001 RCDATA "@CMAKE_CURRENT_SOURCE_DIR@/native/assets/chassis.png"
+1002 RCDATA "@CMAKE_CURRENT_SOURCE_DIR@/native/assets/fader-caps.png"
+1003 RCDATA "@CMAKE_CURRENT_SOURCE_DIR@/native/assets/Michroma-Regular.ttf"
+1004 RCDATA "@CMAKE_CURRENT_SOURCE_DIR@/native/assets/bellows.png"

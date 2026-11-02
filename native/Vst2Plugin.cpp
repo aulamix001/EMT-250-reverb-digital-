@@ -23,7 +23,7 @@ public:
     Engine engine;
     double sampleRate=48000;
     std::unique_ptr<WindowsEditor> editor;
-    vst2::Rect bounds{0,0,570,1186};
+    vst2::Rect bounds{0,0,371,958};
     std::array<double,count> chunk{};
     static Vst2Plugin& self(vst2::Effect* e) {return *static_cast<Vst2Plugin*>(e->object);}
     explicit Vst2Plugin(vst2::Callback callback):host(callback) {
@@ -32,14 +32,14 @@ public:
         effect.numPrograms=int(std::size(presets));effect.numParams=count;
         effect.numInputs=effect.numOutputs=2;
         effect.flags=1|16|32; // editor, replacing processor, state chunks
-        effect.object=this;effect.uniqueID=0x41323530;effect.version=300;
+        effect.object=this;effect.uniqueID=0x41323530;effect.version=400;
         effect.processReplacing=process;
         parameters[8]=1;parameters[9]=1;
         int index=0;
         for(int i=0;i<int(std::size(presets));++i)if(std::string(presets[i].name).find("Default [")==0)index=i;
         preset(index);engine.prepare(sampleRate);setBounds(nativeDpiScale());
     }
-    void setBounds(float factor){bounds.right=std::int16_t(std::lround(1186*factor));bounds.bottom=std::int16_t(std::lround(570*factor));}
+    void setBounds(float factor){bounds.right=std::int16_t(std::lround(958*factor));bounds.bottom=std::int16_t(std::lround(371*factor));}
     int program()const {return std::clamp(int(std::round(parameters[0].load()*(std::size(presets)-1))),0,int(std::size(presets))-1);}
     void preset(int index) {
         index=std::clamp(index,0,int(std::size(presets))-1);
@@ -113,7 +113,7 @@ public:
         case vst2::GetCategory:return 1;
         case vst2::GetEffectName:case vst2::GetProductString:return text("EMT-250 Reverb",64);
         case vst2::GetVendorString:return text("Aulamix",64);
-        case vst2::GetVendorVersion:return 300;
+        case vst2::GetVendorVersion:return 400;
         case vst2::GetVstVersion:return 2400;
         case vst2::GetTailSize:return vst2::Ptr(p.sampleRate*30);
         case vst2::CanDo:if(ptr&&std::strcmp(static_cast<const char*>(ptr),"bypass")==0)return 1;return 0;

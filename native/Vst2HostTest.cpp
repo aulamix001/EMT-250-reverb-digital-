@@ -52,13 +52,13 @@ int main(int argc,char**argv) {try{
     check(effect->getParameter(effect,7)==.375f,"state round trip");
     check(dispatch(vst2::SetChunk,0,bytes-1,saved.data())==0,"reject truncated state");
     for(int program=0;program<30;++program){dispatch(vst2::SetProgram,0,program);check(dispatch(vst2::GetProgram)==program,"select factory program");}
-    vst2::Rect* size=nullptr;check(dispatch(vst2::EditGetRect,0,0,&size)==1&&size&&size->right==1186&&size->bottom==570,"editor dimensions");
+    vst2::Rect* size=nullptr;check(dispatch(vst2::EditGetRect,0,0,&size)==1&&size&&size->right==958&&size->bottom==371,"editor dimensions");
     HWND parent=CreateWindowExA(0,"STATIC","VST2 host test",WS_OVERLAPPEDWINDOW|WS_VISIBLE,282,125,1300,750,nullptr,nullptr,GetModuleHandle(nullptr),nullptr);check(parent,"host HWND");
     for(int pass=0;pass<3;++pass){
         check(dispatch(vst2::EditOpen,0,0,parent)==1,"open VST2 editor");pump();HWND editor=GetWindow(parent,GW_CHILD);check(editor&&IsWindowVisible(editor),"visible native VST2 editor");
-        SetWindowLongPtrA(editor,GWLP_USERDATA,12345);click(editor,380,450);check(std::abs(effect->getParameter(effect,1)-.2f)<.0001,"mode from UI");
-        click(editor,260,450);click(editor,310,90);check(effect->getParameter(effect,2)==1,"fader from UI");check(edits>0,"UI sends host automation");
-        click(editor,200,20);HWND popup=nullptr;
+        SetWindowLongPtrA(editor,GWLP_USERDATA,12345);click(editor,311,325);check(std::abs(effect->getParameter(effect,1)-.2f)<.0001,"mode from UI");
+        click(editor,208,325);click(editor,244,10);check(effect->getParameter(effect,2)==1,"fader from UI");check(edits>0,"UI sends host automation");
+        click(editor,100,65);HWND popup=nullptr;
         for(HWND w=GetTopWindow(nullptr);w;w=GetWindow(w,GW_HWNDNEXT)){char name[128]{};GetClassNameA(w,name,sizeof(name));HWND owner=GetWindow(w,GW_OWNER);if((owner==editor||owner==parent)&&std::string(name).find("EMT250Presets-")==0){popup=w;break;}}
         check(popup&&IsWindowVisible(popup),"VST2 preset browser");
         check(dispatch(vst2::EditClose)==1&&!IsWindow(editor)&&!IsWindow(popup),"close VST2 editor and browser");

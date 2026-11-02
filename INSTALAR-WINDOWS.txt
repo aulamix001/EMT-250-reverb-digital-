@@ -1,4 +1,4 @@
-EMT-250 Reverb 0.4.2 — Windows x64 — VST3 e VST2
+EMT-250 Reverb 0.5.0 — Windows x64 — VST3 e VST2
 
 Feche completamente o REAPER antes de substituir arquivos.
 
@@ -18,21 +18,28 @@ No REAPER 7.84 x64 (Windows 11, inclusive escala 125%):
 - Preferences > Plug-ins > VST > Re-scan > Clear cache and re-scan.
 - Procure VST3: EMT-250 Reverb ou VST: EMT-250 Reverb.
 - As duas versoes sao instancias independentes. Use apenas uma por insert.
-- Clique com o botao direito > INFO para identificar a versao 0.4.2.
+- Clique com o botao direito > INFO para identificar a versao 0.5.0.
 - Presets, A/B, COPY/PASTE e arquivos .a250 tambem ficam no botao direito.
-- Clique no nome EMT 250 para abrir a biblioteca de presets.
-- A barra superior mostra versao e formato. Se nao exibir 0.4.2, o host carregou um arquivo antigo.
+- Clique no preset da barra superior ou no nome EMT 250 para abrir a aba lateral.
+- A aba flutuante pode ser movida pelo cabecalho; X a oculta sem fechar o plugin.
+- Busca: digite o nome; nomes exatos aparecem antes de correspondencias parciais.
+- Tags podem ser combinadas (OU); use a roda ou barra lateral para chegar a Phase.
+- Clique na estrela do preset para favoritar; FAVORITES filtra os favoritos.
+- Favoritos persistem em %LOCALAPPDATA%\Aulamix\EMT250\favorites.txt.
+- SAVE exporta .a250. Importe pelo botao direito. Fabrica nao permite DELETE/RENAME.
+- A barra superior mostra versao e formato. Se nao exibir 0.5.0, o host carregou um arquivo antigo.
 - A escala acompanha o host. A janela VST3 tambem aceita redimensionamento.
 - Remova Aulamix250.vst3 antigo se ainda estiver instalado.
 
 Se o painel continuar vazio:
-1. Abra a versao 0.4.2 na DAW.
+1. Abra a versao 0.5.0 na DAW.
 2. Execute ABRIR-DIAGNOSTICO.cmd deste ZIP ou abra:
    %TEMP%\EMT250-ui.log
-3. Envie o texto das linhas 0.4.2. O arquivo registra chamadas do host,
+3. Envie o texto das linhas 0.5.0. O arquivo registra chamadas do host,
    criacao da janela, primeira pintura e erros Win32; nao contem audio ou chaves.
 
 Validacao: testes Windows x64 executados via Wine, testes DSP e validador
-Steinberg Linux. O usuario confirmou a 0.3.0 no REAPER; esta revisao visual 0.4.2 foi testada via Wine.
-Nao ha garantia de que toda causa do painel vazio nesse host foi eliminada.
+Steinberg Linux. Esta revisao foi testada via Wine; nao foi executada no REAPER nativo nesta nuvem.
+O mapeamento dos 30 presets foi comparado com o catalogo. Delay R de Dual Delay,
+Hands Down Double e Jimmy Jam Delay mantem valores provisorios R=L; veja MAPEAMENTO.csv.
 O DSP e proprio e aproximado; veja NATIVE.md e VALIDACAO.txt.

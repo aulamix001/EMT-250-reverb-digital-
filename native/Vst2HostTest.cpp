@@ -1,4 +1,5 @@
 #include "Vst2Abi.h"
+#include "Presets.h"
 #include <windows.h>
 #include <array>
 #include <cmath>
@@ -51,7 +52,7 @@ int main(int argc,char**argv) {try{
     effect->setParameter(effect,7,.9f);check(dispatch(vst2::SetChunk,0,bytes,saved.data())==1,"restore state");
     check(effect->getParameter(effect,7)==.375f,"state round trip");
     check(dispatch(vst2::SetChunk,0,bytes-1,saved.data())==0,"reject truncated state");
-    for(int program=0;program<30;++program){dispatch(vst2::SetProgram,0,program);check(dispatch(vst2::GetProgram)==program,"select factory program");}
+    for(int program=0;program<30;++program){dispatch(vst2::SetProgram,0,program);check(dispatch(vst2::GetProgram)==program,"select factory program");const auto&p=presets[program];bool mapped=std::abs(effect->getParameter(effect,1)-p.mode/5.f)<1e-6;for(int f=0;f<4;++f)mapped=mapped&&std::abs(effect->getParameter(effect,2+f)-p.f[f]/float(f==0?15:3))<1e-6;mapped=mapped&&std::abs(effect->getParameter(effect,6)-float(p.rear))<1e-6&&std::abs(effect->getParameter(effect,7)-p.mix)<1e-6&&std::abs(effect->getParameter(effect,11)-p.left/315)<1e-6&&std::abs(effect->getParameter(effect,12)-p.right/315)<1e-6;check(mapped,"VST2 factory parameter mapping");}
     vst2::Rect* size=nullptr;check(dispatch(vst2::EditGetRect,0,0,&size)==1&&size&&size->right==958&&size->bottom==403,"editor dimensions");
     HWND parent=CreateWindowExA(0,"STATIC","VST2 host test",WS_OVERLAPPEDWINDOW|WS_VISIBLE,282,125,1300,750,nullptr,nullptr,GetModuleHandle(nullptr),nullptr);check(parent,"host HWND");
     for(int pass=0;pass<3;++pass){

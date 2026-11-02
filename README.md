@@ -1,8 +1,10 @@
-Download Windows x64 **VST3 + VST2 0.4.2**: [EMT-250-Reverb-0.4.2-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.4.2-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Painel redesenhado conforme a última referência, com capas e sanfonas 3D, texturas e suporte a escala sem deformação. Versão gráfica testada via Wine; o usuário confirmou o funcionamento da 0.3.0 no REAPER 7.84 x64.
+Download Windows x64 **VST3 + VST2 0.5.0**: [EMT-250-Reverb-0.5.0-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.5.0-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Painel redesenhado conforme a última referência, com capas e sanfonas 3D, texturas e suporte a escala sem deformação. Aba lateral flutuante conforme a referência, busca com prioridade para nomes exatos, 13 categorias e favoritos persistentes. Compilados testados via Wine; esta revisão não foi executada no REAPER nativo.
 
-Captura do painel a 125% em host de teste via Wine: [interface 0.4.2](releases/interface-0.4.2-125.png).
+Captura do painel a 125% em host de teste via Wine: [interface 0.5.0](releases/interface-0.5.0-125.png).
 
-Botão direito no painel: presets, comparação A/B, COPY/PASTE, arquivos `.a250` e INFO. Clique no nome EMT 250 para abrir a biblioteca.
+Botão direito no painel: presets, comparação A/B, COPY/PASTE, arquivos `.a250` e INFO. Clique no nome do preset na barra superior ou no nome EMT 250 para abrir a biblioteca. SAVE exporta .a250; DELETE/RENAME ficam desativados para os presets de fábrica.
+
+Captura da aba: [presets 0.5.0](releases/presets-0.5.0-125.png). Os 30 nomes e parâmetros nativos são comparados automaticamente com o catálogo. Os tempos R de três presets Delay permanecem provisórios conforme a documentação original.
 
 # EMT-250 Reverb — VST3, VST2 e biblioteca de presets
 

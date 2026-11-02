@@ -1,5 +1,7 @@
 // Windows VST3 host regression test. Run natively, or with Wine for cross builds.
 #include <windows.h>
+#include "Presets.h"
+#include "PresetBrowser.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -80,6 +82,13 @@ static void expectPaint(HWND window) {
     DeleteDC(memory);
     ReleaseDC(window, dc);
     require(painted, "host print request renders the panel rather than a blank surface");
+}
+static void captureBrowser(HWND window){
+ static bool captured=false;const char*path=std::getenv("EMT250_TEST_POPUP");if(captured||!path)return;
+ RECT r{};GetClientRect(window,&r);HDC dc=GetDC(window),memory=CreateCompatibleDC(dc);auto bitmap=CreateCompatibleBitmap(dc,r.right,r.bottom);auto old=SelectObject(memory,bitmap);SendMessage(window,WM_PRINTCLIENT,reinterpret_cast<WPARAM>(memory),PRF_CLIENT);SelectObject(memory,old);
+ BITMAPINFO info{};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=r.right;info.bmiHeader.biHeight=r.bottom;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
+ std::vector<unsigned char> pixels(size_t(r.right)*r.bottom*4);require(GetDIBits(dc,bitmap,0,r.bottom,pixels.data(),&info,DIB_RGB_COLORS)!=0,"capture floating browser");
+ BITMAPFILEHEADER header{};header.bfType=0x4d42;header.bfOffBits=sizeof(header)+sizeof(BITMAPINFOHEADER);header.bfSize=DWORD(header.bfOffBits+pixels.size());FILE*file=std::fopen(path,"wb");require(file!=nullptr,"browser snapshot file");bool ok=std::fwrite(&header,sizeof(header),1,file)==1&&std::fwrite(&info.bmiHeader,sizeof(BITMAPINFOHEADER),1,file)==1&&std::fwrite(pixels.data(),pixels.size(),1,file)==1;std::fclose(file);require(ok,"browser snapshot written");DeleteObject(bitmap);DeleteDC(memory);ReleaseDC(window,dc);captured=true;
 }
 class HostFrame:public IPlugFrame {
     uint32 refs=1;
@@ -254,6 +263,22 @@ int main(int argc, char** argv) {
             click(popup, 50, 365);
             require(controller->getParamNormalized(1) == 0., "filtered preset selection");
             require(processor->process(data) == kResultOk, "process preset state");
+            SetWindowTextA(search, "");pump();captureBrowser(popup);
+            // All names go through the real search control and mouse hit testing.
+            for(int id=0;id<int(std::size(presets));++id){
+                auto title=PresetBrowser::name(id);SetWindowTextA(search,title.c_str());click(popup,50,350);
+                const auto&p=presets[id];bool mapped=std::abs(controller->getParamNormalized(0)-id/29.)<1e-6&&std::abs(controller->getParamNormalized(1)-p.mode/5.)<1e-6;
+                for(int f=0;f<4;++f)mapped=mapped&&std::abs(controller->getParamNormalized(2+f)-p.f[f]/double(f==0?15:3))<1e-6;
+                mapped=mapped&&controller->getParamNormalized(6)==double(p.rear)&&std::abs(controller->getParamNormalized(7)-p.mix)<1e-6&&std::abs(controller->getParamNormalized(11)-p.left/315)<1e-6&&std::abs(controller->getParamNormalized(12)-p.right/315)<1e-6;
+                if(!mapped){std::fprintf(stderr,"mapping failure id=%d name=%s values:",id,title.c_str());for(int parameter=0;parameter<13;++parameter)std::fprintf(stderr," %d=%.9f",parameter,controller->getParamNormalized(parameter));std::fprintf(stderr,"\n");}require(mapped,"browser name maps to complete factory state");require(processor->process(data)==kResultOk,"audio accepts browser preset");
+            }
+            SetWindowTextA(search,"Default");click(popup,50,350);SetWindowTextA(search,"");
+            click(popup,60,130);SetWindowTextA(search,"Rear Outputs");click(popup,50,350);require(std::abs(controller->getParamNormalized(0)-9/29.)<1e-6,"tag rejects nonmatching preset");
+            click(popup,60,130);click(popup,50,350);require(std::abs(controller->getParamNormalized(0)-23/29.)<1e-6,"clearing tag restores matching preset");
+            SetWindowTextA(search,"");click(popup,377,230);click(popup,60,230);SetWindowTextA(search,"Default");click(popup,50,350);require(std::abs(controller->getParamNormalized(0)-23/29.)<1e-6,"scrolled Phase tag rejects Reverb preset");click(popup,60,230);click(popup,50,350);require(std::abs(controller->getParamNormalized(0)-9/29.)<1e-6,"scrolled Phase tag clears correctly");
+            SetWindowTextA(search,"");click(popup,365,275);click(popup,365,275); // Persist and restore favorites without changing user preference.
+            SendMessage(popup,WM_CLOSE,0,0);require(!IsWindowVisible(popup),"close hides floating browser");click(editor,200,-16);require(IsWindowVisible(popup),"toolbar reopens floating browser");
+
             require(view->removed() == kResultOk, "detach editor");
             require(!IsWindow(editor) && !IsWindow(popup), "destroy editor and owned browser");
             require(view->attached(host, kPlatformTypeHWND) == kResultOk, "reattach same view");

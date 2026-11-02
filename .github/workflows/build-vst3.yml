@@ -26,7 +26,7 @@ jobs:
       - run: npm test
       - run: node scripts/native-presets.js
       - run: cmake -S . -B build -DVST3_SDK_ROOT=${{ github.workspace }}/sdk -DCMAKE_BUILD_TYPE=Release
-      - run: cmake --build build --config Release --target Aulamix250 dsp-test --parallel 2
+      - run: cmake --build build --config Release --target Aulamix250 dsp-test preset-browser-test --parallel 2
       - name: Build Windows VST2 and editor host tests
         if: runner.os == 'Windows'
         run: cmake --build build --config Release --target Aulamix250Vst2 windows-host-test vst2-host-test --parallel 2

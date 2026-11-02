@@ -60,5 +60,5 @@ bool InitModule(){
  return true;
 }bool DeinitModule(){return true;}
 BEGIN_FACTORY_DEF("Aulamix", "https://github.com/aulamix001/EMT-250-reverb-digital-", "")
-DEF_CLASS2(INLINE_UID_FROM_FUID(uid),PClassInfo::kManyInstances,kVstAudioEffectClass,"EMT-250 Reverb",0,PlugType::kFxReverb,"0.4.2",kVstVersionString,Plugin::create)
+DEF_CLASS2(INLINE_UID_FROM_FUID(uid),PClassInfo::kManyInstances,kVstAudioEffectClass,"EMT-250 Reverb",0,PlugType::kFxReverb,"0.5.0",kVstVersionString,Plugin::create)
 END_FACTORY

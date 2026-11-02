@@ -1,0 +1,40 @@
+EMT-250 Reverb 0.5.0 — Windows x64 VST3 + VST2
+
+Alteracao: aba lateral flutuante de presets conforme a referencia fornecida.
+Busca, prioridade de nome exato, 13 tags (uniao OU), favoritos persistentes,
+rolagem independente de tags/lista e selecao por indice estavel de fabrica.
+SAVE exporta .a250; importar pelo botao direito. DELETE/RENAME desativados
+para presets de fabrica; nao ha biblioteca editavel de presets do usuario.
+
+Painel principal: assets, UiSkin.h, UiArtwork.h e DSP sem alteracoes nesta
+revisao. IDs de plugin, parametros e ordem dos 30 presets preservados.
+
+VERIFICACAO
+- Compilacao Release Windows x64 PE32+ por MinGW GCC 14, SDK VST3 3.8.0_build_66.
+- Testes Windows executados via Wine 10 / Xvfb, nao em REAPER nativo.
+- CTest Windows: 4/4 aprovados (DSP, PresetBrowser, WindowsHost, VST2Host).
+- VST3: todos os 30 nomes selecionados pela busca e clique reais; conferidos
+  modo, 4 faders, saida, mix e delays L/R. Processamento apos cada selecao.
+- VST2: todos os 30 programas selecionados e parametros conferidos.
+- Casos Male/Female Vox, filtros, Phase via rolagem, janela reaberta,
+  favoritos persistentes e exclusao de favorito cobertos por regressao.
+- Mantidos testes de mouse com audio ativo, ecos de preset do host,
+  automacao, A/B, COPY/PASTE, escalas e ciclos de abrir/fechar editor.
+- CTest Linux: 2/2 aprovados (DSP e PresetBrowser).
+- Validador Steinberg Linux: 47 aprovados, 0 falhas.
+- npm test: catalogo e comparacao independente dos 30 registros do
+  native/Presets.h com model.js aprovados.
+- ZIP: integridade CRC e executaveis PE32+ x64/exportacoes verificados
+  por scripts/package-windows.py. Capturas a 125% obtidas do plugin compilado.
+
+LIMITES DOS DADOS DE REFERENCIA
+A verificacao confirma a correspondencia de software com o catalogo.
+Nao confirma identidade com o DSP ou presets proprietarios EMT/UAD.
+Delay R de Dual Delay, Hands Down Double e Jimmy Jam Delay nao aparece
+nas referencias originais. Permanecem R=L provisorios (200/0/60 ms).
+MAPEAMENTO.csv e presets.json identificam explicitamente os desconhecidos.
+
+INSTALACAO
+Feche o REAPER. Substitua a pasta VST3 inteira e/ou DLL VST2, seguindo
+INSTALAR-WINDOWS.txt. Confirme 0.5.0 na barra superior do plugin.
+Clique no nome do preset na barra para abrir a aba flutuante preta.

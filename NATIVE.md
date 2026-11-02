@@ -1,3 +1,13 @@
+# 0.5.0 — organized floating preset browser
+
+The shared Windows VST3/VST2 browser follows the supplied reference: charcoal header, search, three-column tag grid, separate tag/list scrollbars, selected-preset strip, favorites star, SAVE and an alphabetical list. It opens beside the main editor where screen space allows, stays within the monitor work area, and can be moved by its header. Click the preset name in the toolbar or the EMT 250 name on the panel to open it. Main panel artwork, rendering, gestures, DSP and parameter/preset IDs are preserved.
+
+Search is case insensitive and prioritizes an exact name (notably Male Vox Plate versus Female Vox Plate). Multiple tags use OR; search and favorites further restrict results. Phase is accessible by scrolling the tag section. Scrolling, empty results and clicks resolve through factory IDs rather than visible row indices. Favorites persist by name in %LOCALAPPDATA%/Aulamix/EMT250/favorites.txt. SAVE exports .a250; import remains in the panel context menu. Factory DELETE and RENAME are disabled; this version does not add an editable user-preset library.
+
+Automated checks compare all 30 native names, tags, mode, four faders, mix, output selection and L/R values with model.js. Windows host tests select all 30 through the VST3 search window and check the parameters, and independently check all 30 VST2 programs. Browser tests cover tag unions, exact matches, empty results, boundaries and favorites persistence. Tests run via Wine, not native REAPER/Windows 11.
+
+Mapping validation confirms software consistency, not identity to proprietary EMT/UAD presets. Original reference data still leaves Delay R unknown for Dual Delay, Hands Down Double and Jimmy Jam Delay; runtime retains provisional R=L (200/0/60 ms). MAPEAMENTO.csv and presets.json identify these unknowns rather than presenting them as verified original values.
+
 # 0.4.2 — stable mouse edits and black floating browser
 
 Fixed a reproduced VST3 parameter feedback defect: repeated host messages for the already-selected preset used to reload the factory values and reset user edits. Equality is now based on the discrete preset index, including float-rounded host values. Pending editor changes are consumed after acquiring the dirty flag and take priority over stale host events; processor state is no longer blindly copied back over the editor every block. Only genuine host changes are published with compare/exchange. Continuous fader/Dry-Wet gestures send one beginEdit at mouse down and one endEdit at release/capture loss, and protect edited parameters while held. Session state reads the latest editor mailbox, including edits made while transport is stopped. Actual automation is still accepted after editing.

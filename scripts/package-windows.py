@@ -29,7 +29,7 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     archive.write(vst3, 'EMT-250 Reverb.vst3/Contents/x86_64-win/EMT-250 Reverb.vst3')
     if vst2:
         archive.write(vst2, 'VST2/EMT-250 Reverb.dll')
-    for name in ['NATIVE.md', 'INSTALAR-WINDOWS.txt', 'licenses/Steinberg-VST3-SDK.txt', 'licenses/Michroma-OFL.txt', 'scripts/ABRIR-DIAGNOSTICO.cmd']:
+    for name in ['NATIVE.md', 'INSTALAR-WINDOWS.txt', 'MAPEAMENTO.csv', 'presets.json', 'licenses/Steinberg-VST3-SDK.txt', 'licenses/Michroma-OFL.txt', 'scripts/ABRIR-DIAGNOSTICO.cmd']:
         archive.write(root / name, pathlib.Path(name).name if name.endswith('.cmd') else name)
     validation = root / f'releases/validation-windows-{version}.txt'
     if validation.exists():
@@ -37,6 +37,9 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
     snapshot = root / f'releases/interface-{version}-125.png'
     if snapshot.exists():
         archive.write(snapshot, 'interface-125-Wine.png')
+    browser_snapshot = root / f'releases/presets-{version}-125.png'
+    if browser_snapshot.exists():
+        archive.write(browser_snapshot, 'presets-125-Wine.png')
 with zipfile.ZipFile(output) as archive:
     assert archive.testzip() is None
 print(f'Windows x64 PE and ZIP integrity verified: {output.name}')

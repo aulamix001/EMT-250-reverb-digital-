@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "python3 -m http.server 8000",
-    "test": "node tests/model.test.js",
+    "test": "node --test tests/*.test.js",
     "export": "node scripts/export-presets.js"
   }
 }

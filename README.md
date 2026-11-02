@@ -1,6 +1,6 @@
-Download Windows x64 **VST3 + VST2 0.4.1**: [EMT-250-Reverb-0.4.1-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.4.1-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Painel redesenhado conforme a última referência, com capas e sanfonas 3D, texturas e suporte a escala sem deformação. Versão gráfica testada via Wine; o usuário confirmou o funcionamento da 0.3.0 no REAPER 7.84 x64.
+Download Windows x64 **VST3 + VST2 0.4.2**: [EMT-250-Reverb-0.4.2-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.4.2-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Painel redesenhado conforme a última referência, com capas e sanfonas 3D, texturas e suporte a escala sem deformação. Versão gráfica testada via Wine; o usuário confirmou o funcionamento da 0.3.0 no REAPER 7.84 x64.
 
-Captura do painel a 125% em host de teste via Wine: [interface 0.4.1](releases/interface-0.4.1-125.png).
+Captura do painel a 125% em host de teste via Wine: [interface 0.4.2](releases/interface-0.4.2-125.png).
 
 Botão direito no painel: presets, comparação A/B, COPY/PASTE, arquivos `.a250` e INFO. Clique no nome EMT 250 para abrir a biblioteca.
 

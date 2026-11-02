@@ -32,7 +32,7 @@ public:
         effect.numPrograms=int(std::size(presets));effect.numParams=count;
         effect.numInputs=effect.numOutputs=2;
         effect.flags=1|16|32; // editor, replacing processor, state chunks
-        effect.object=this;effect.uniqueID=0x41323530;effect.version=401;
+        effect.object=this;effect.uniqueID=0x41323530;effect.version=402;
         effect.processReplacing=process;
         parameters[8]=1;parameters[9]=1;
         int index=0;
@@ -113,7 +113,7 @@ public:
         case vst2::GetCategory:return 1;
         case vst2::GetEffectName:case vst2::GetProductString:return text("EMT-250 Reverb",64);
         case vst2::GetVendorString:return text("Aulamix",64);
-        case vst2::GetVendorVersion:return 401;
+        case vst2::GetVendorVersion:return 402;
         case vst2::GetVstVersion:return 2400;
         case vst2::GetTailSize:return vst2::Ptr(p.sampleRate*30);
         case 50:if(index==0x50726553&&value==0x41654373&&std::isfinite(opt)&&opt>0&&opt<32767.f/958){p.hostScale=opt;p.setBounds(opt);if(p.editor)return p.editor->setContentScaleFactor(opt)==Steinberg::kResultOk;return 1;}return 0;

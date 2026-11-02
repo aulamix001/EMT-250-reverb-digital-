@@ -1,4 +1,4 @@
-EMT-250 Reverb 0.4.1 — Windows x64 — VST3 e VST2
+EMT-250 Reverb 0.4.2 — Windows x64 — VST3 e VST2
 
 Feche completamente o REAPER antes de substituir arquivos.
 
@@ -18,21 +18,21 @@ No REAPER 7.84 x64 (Windows 11, inclusive escala 125%):
 - Preferences > Plug-ins > VST > Re-scan > Clear cache and re-scan.
 - Procure VST3: EMT-250 Reverb ou VST: EMT-250 Reverb.
 - As duas versoes sao instancias independentes. Use apenas uma por insert.
-- Clique com o botao direito > INFO para identificar a versao 0.4.1.
+- Clique com o botao direito > INFO para identificar a versao 0.4.2.
 - Presets, A/B, COPY/PASTE e arquivos .a250 tambem ficam no botao direito.
 - Clique no nome EMT 250 para abrir a biblioteca de presets.
-- A barra superior mostra versao e formato. Se nao exibir 0.4.1, o host carregou um arquivo antigo.
+- A barra superior mostra versao e formato. Se nao exibir 0.4.2, o host carregou um arquivo antigo.
 - A escala acompanha o host. A janela VST3 tambem aceita redimensionamento.
 - Remova Aulamix250.vst3 antigo se ainda estiver instalado.
 
 Se o painel continuar vazio:
-1. Abra a versao 0.4.1 na DAW.
+1. Abra a versao 0.4.2 na DAW.
 2. Execute ABRIR-DIAGNOSTICO.cmd deste ZIP ou abra:
    %TEMP%\EMT250-ui.log
-3. Envie o texto das linhas 0.4.1. O arquivo registra chamadas do host,
+3. Envie o texto das linhas 0.4.2. O arquivo registra chamadas do host,
    criacao da janela, primeira pintura e erros Win32; nao contem audio ou chaves.
 
 Validacao: testes Windows x64 executados via Wine, testes DSP e validador
-Steinberg Linux. O usuario confirmou a 0.3.0 no REAPER; esta revisao visual 0.4.1 foi testada via Wine.
+Steinberg Linux. O usuario confirmou a 0.3.0 no REAPER; esta revisao visual 0.4.2 foi testada via Wine.
 Nao ha garantia de que toda causa do painel vazio nesse host foi eliminada.
 O DSP e proprio e aproximado; veja NATIVE.md e VALIDACAO.txt.

@@ -12,6 +12,7 @@
 #include "pluginterfaces/vst/ivsteditcontroller.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/gui/iplugview.h"
+#include "public.sdk/source/vst/hosting/parameterchanges.h"
 #include "pluginterfaces/gui/iplugviewcontentscalesupport.h"
 using namespace Steinberg;
 using namespace Steinberg::Vst;
@@ -208,6 +209,23 @@ int main(int argc, char** argv) {
             click(editor,208,325); // Reverb: fader 1 is active.
             click(editor,244,10);
             require(controller->getParamNormalized(2) == 1., "fader updates host parameter");
+            ParameterChanges echoes(13);int32 queueIndex=0,pointIndex=0;
+            auto* presetEcho=echoes.addParameterData(0,queueIndex);presetEcho->addPoint(0,double(float(controller->getParamNormalized(0))),pointIndex);
+            data.inputParameterChanges=&echoes;
+            auto mouse=[&](UINT message,int x,int y){RECT c{};GetClientRect(editor,&c);double z=std::min(c.right/958.,c.bottom/403.);int px=int(std::lround((c.right-958*z)/2+x*z)),py=int(std::lround((c.bottom-403*z)/2+(y+32)*z));SendMessage(editor,message,message==WM_LBUTTONUP?0:MK_LBUTTON,MAKELPARAM(px,py));};
+            mouse(WM_LBUTTONDOWN,244,239);
+            for(int y:{210,160,110,60,10}){mouse(WM_MOUSEMOVE,244,y);require(processor->process(data)==kResultOk,"audio processes during mouse drag");}
+            mouse(WM_LBUTTONUP,244,10);
+            require(controller->getParamNormalized(2)==1.,"continuous drag reaches top with audio running");
+            for(int block=0;block<8;++block)require(processor->process(data)==kResultOk,"process repeated unchanged host preset");
+            SendMessage(editor,WM_COMMAND,6,0);click(editor,244,242);SendMessage(editor,WM_COMMAND,7,0);
+            require(controller->getParamNormalized(2)==1.,"fader survives host preset echo and audio blocks");
+            echoes.clearQueue();auto* automation=echoes.addParameterData(2,queueIndex);automation->addPoint(0,.25,pointIndex);
+            controller->setParamNormalized(2,.25);
+            for(int block=0;block<3;++block)require(processor->process(data)==kResultOk,"genuine host automation processes");
+            SendMessage(editor,WM_COMMAND,6,0);click(editor,244,242);SendMessage(editor,WM_COMMAND,7,0);
+            require(controller->getParamNormalized(2)==.25,"genuine automation still reaches editor");
+            data.inputParameterChanges=nullptr;click(editor,244,10);
             SendMessage(editor,WM_COMMAND,5,0);click(editor,244,242);require(controller->getParamNormalized(2)==0.,"edit comparison B");
             SendMessage(editor,WM_COMMAND,4,0);require(controller->getParamNormalized(2)==1.,"restore comparison A");
             SendMessage(editor,WM_COMMAND,5,0);require(controller->getParamNormalized(2)==0.,"restore comparison B");
@@ -224,6 +242,8 @@ int main(int argc, char** argv) {
             }
             HWND popup = found;
             require(popup && IsWindowVisible(popup), "owned preset browser opens");
+            require(contentScale->setContentScaleFactor(1.5f)==kResultOk&&IsWindow(popup)&&IsWindowVisible(popup),"floating browser survives host scale renegotiation");
+            require(contentScale->setContentScaleFactor(1.25f)==kResultOk,"restore scale with browser open");
             HWND search = FindWindowExA(popup, nullptr, "EDIT", nullptr);
             require(search != nullptr, "preset search control");
             SetWindowTextA(search, "Default");

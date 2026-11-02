@@ -19,6 +19,7 @@ class Plugin:public SingleComponentEffect {
 public:
  IPlugView* PLUGIN_API createView(FIDString type)override{
 #ifdef _WIN32
+ uiDiagnostic("createView type=%s",type?type:"(null)");
  if(type&&strcmp(type,ViewType::kEditor)==0){addRef();return new WindowsEditor([this](int i){return i==13?meter.load():ui[i].load();},[this](int i,double v){v=std::clamp(v,0.,1.);ui[i].store(v);pending[i].store(true);beginEdit(i);setParamNormalized(i,v);performEdit(i,v);endEdit(i);},[this](){release();});}
 #endif
  return nullptr;
@@ -37,7 +38,12 @@ public:
  tresult PLUGIN_API getState(IBStream* stream)override{IBStreamer s(stream,kLittleEndian);for(auto v:values)if(!s.writeDouble(v))return kResultFalse;return kResultOk;}
  tresult PLUGIN_API setState(IBStream* stream)override{IBStreamer s(stream,kLittleEndian);auto next=values;for(auto&v:next)if(!s.readDouble(v)||!std::isfinite(v)||v<0||v>1)return kResultFalse;values=next;for(int i=0;i<13;++i){setParamNormalized(i,values[i]);ui[i].store(values[i]);}return kResultOk;}
 };
-bool InitModule(){return true;}bool DeinitModule(){return true;}
+bool InitModule(){
+#ifdef _WIN32
+ uiDiagnostic("VST3 InitModule");
+#endif
+ return true;
+}bool DeinitModule(){return true;}
 BEGIN_FACTORY_DEF("Aulamix", "https://github.com/aulamix001/EMT-250-reverb-digital-", "")
-DEF_CLASS2(INLINE_UID_FROM_FUID(uid),PClassInfo::kManyInstances,kVstAudioEffectClass,"EMT-250 Reverb",0,PlugType::kFxReverb,"0.2.2",kVstVersionString,Plugin::create)
+DEF_CLASS2(INLINE_UID_FROM_FUID(uid),PClassInfo::kManyInstances,kVstAudioEffectClass,"EMT-250 Reverb",0,PlugType::kFxReverb,"0.3.0",kVstVersionString,Plugin::create)
 END_FACTORY

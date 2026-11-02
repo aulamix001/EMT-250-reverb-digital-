@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <vector>
 #include <stdexcept>
 #include <string>
 #include "pluginterfaces/base/ipluginbase.h"
@@ -10,6 +12,7 @@
 #include "pluginterfaces/vst/ivsteditcontroller.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/gui/iplugview.h"
+#include "pluginterfaces/gui/iplugviewcontentscalesupport.h"
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
@@ -29,6 +32,10 @@ static void pump() {
     }
 }
 static void click(HWND window, int x, int y) {
+    RECT client{};GetClientRect(window,&client);char name[128]{};GetClassNameA(window,name,sizeof(name));
+    bool popup=std::string(name).find("EMT250Presets-")==0;
+    x=int(std::lround(double(x)*client.right/(popup?390:1186)));
+    y=int(std::lround(double(y)*client.bottom/(popup?710:570)));
     SendMessage(window, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(x, y));
     SendMessage(window, WM_LBUTTONUP, 0, MAKELPARAM(x, y));
     pump();
@@ -37,25 +44,50 @@ static void expectRect(HWND window, HWND parent, const ViewRect& expected) {
     RECT actual{};
     require(GetWindowRect(window, &actual), "read native editor bounds");
     MapWindowPoints(nullptr, parent, reinterpret_cast<POINT*>(&actual), 2);
-    require(actual.left == expected.left && actual.top == expected.top &&
-            actual.right == expected.right && actual.bottom == expected.bottom,
-            "native editor follows the host rectangle");
+    require(actual.left == 0 && actual.top == 0 &&
+            actual.right == expected.getWidth() && actual.bottom == expected.getHeight(),
+            "native editor stays at the host container local origin");
 }
 static void expectPaint(HWND window) {
     HDC dc = GetDC(window), memory = CreateCompatibleDC(dc);
-    HBITMAP bitmap = CreateCompatibleBitmap(dc, 1186, 570);
+    RECT bounds{};GetClientRect(window,&bounds);
+    HBITMAP bitmap = CreateCompatibleBitmap(dc, bounds.right, bounds.bottom);
     auto previous = SelectObject(memory, bitmap);
-    RECT bounds{0, 0, 1186, 570};
     FillRect(memory, &bounds, reinterpret_cast<HBRUSH>(GetStockObject(WHITE_BRUSH)));
     SendMessage(window, WM_PRINTCLIENT, reinterpret_cast<WPARAM>(memory), PRF_CLIENT);
-    bool painted = GetPixel(memory, 1000, 20) == RGB(58, 58, 58) &&
-                   GetPixel(memory, 1000, 20) != GetPixel(memory, 1100, 300);
+    bool painted = GetPixel(memory, bounds.right*1000/1186, bounds.bottom*20/570) == RGB(58, 58, 58) &&
+                   GetPixel(memory, bounds.right*1000/1186, bounds.bottom*20/570) != GetPixel(memory, bounds.right*1100/1186, bounds.bottom*300/570);
     SelectObject(memory, previous);
+    static bool captured=false;
+    if(!captured&&bounds.right==1483&&bounds.bottom==713){
+        if(const char*path=std::getenv("EMT250_TEST_IMAGE")){
+            BITMAPINFO info{};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=bounds.right;info.bmiHeader.biHeight=bounds.bottom;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
+            std::vector<unsigned char> pixels(size_t(bounds.right)*bounds.bottom*4);
+            require(GetDIBits(dc,bitmap,0,bounds.bottom,pixels.data(),&info,DIB_RGB_COLORS)!=0,"capture scaled panel");
+            BITMAPFILEHEADER header{};header.bfType=0x4d42;header.bfOffBits=sizeof(header)+sizeof(BITMAPINFOHEADER);header.bfSize=DWORD(header.bfOffBits+pixels.size());
+            FILE*file=std::fopen(path,"wb");require(file!=nullptr,"snapshot file");
+            bool written=std::fwrite(&header,sizeof(header),1,file)==1&&std::fwrite(&info.bmiHeader,sizeof(BITMAPINFOHEADER),1,file)==1&&std::fwrite(pixels.data(),pixels.size(),1,file)==1;
+            std::fclose(file);require(written,"snapshot written");captured=true;
+        }
+    }
     DeleteObject(bitmap);
     DeleteDC(memory);
     ReleaseDC(window, dc);
     require(painted, "host print request renders the panel rather than a blank surface");
 }
+class HostFrame:public IPlugFrame {
+    uint32 refs=1;
+public:
+    int requests=0;
+    tresult PLUGIN_API queryInterface(const TUID id,void**object)override{
+        if(!object)return kInvalidArgument;
+        if(FUnknownPrivate::iidEqual(id,IPlugFrame::iid)||FUnknownPrivate::iidEqual(id,FUnknown::iid)){*object=static_cast<IPlugFrame*>(this);addRef();return kResultOk;}
+        *object=nullptr;return kNoInterface;
+    }
+    uint32 PLUGIN_API addRef()override{return ++refs;}
+    uint32 PLUGIN_API release()override{auto n=--refs;if(!n)delete this;return n;}
+    tresult PLUGIN_API resizeView(IPlugView*view,ViewRect*size)override{++requests;return view->onSize(size);}
+};
 int main(int argc, char** argv) {
     try {
         require(argc == 2, "VST3 module argument");
@@ -85,27 +117,41 @@ int main(int argc, char** argv) {
         component->setActive(true);
         processor->setProcessing(true);
         HWND host = CreateWindowExA(0, "STATIC", "VST3 host test", WS_OVERLAPPEDWINDOW,
-                                   0, 0, 1500, 800, nullptr, nullptr, GetModuleHandle(nullptr), nullptr);
+                                   282, 125, 1500, 800, nullptr, nullptr, GetModuleHandle(nullptr), nullptr);
         require(host != nullptr, "create initially hidden host");
         for (int pass = 0; pass < 3; ++pass) {
             auto view = controller->createView(ViewType::kEditor);
             require(view != nullptr, "create editor");
+            IPlugViewContentScaleSupport* contentScale=nullptr;
+            require(view->queryInterface(IPlugViewContentScaleSupport::iid,reinterpret_cast<void**>(&contentScale))==kResultOk,"content scale interface");
+            require(contentScale->setContentScaleFactor(1.25f)==kResultOk,"125% before frame and attachment");
+            ViewRect dpiSize;view->getSize(&dpiSize);
+            require(dpiSize.getWidth()==1483&&dpiSize.getHeight()==713,"125% physical dimensions before frame");
+            auto frame=new HostFrame;
+            require(view->setFrame(frame)==kResultOk,"host frame");
+            require(contentScale->setContentScaleFactor(1.f)==kResultOk&&frame->requests==1,"resize negotiation with host");
             require(view->isPlatformTypeSupported(nullptr) == kResultFalse, "reject null platform");
             require(view->attached(nullptr, kPlatformTypeHWND) != kResultOk, "reject missing parent");
             require(view->onSize(nullptr) != kResultOk, "reject missing rectangle");
             ViewRect empty;
             require(view->onSize(&empty) != kResultOk, "reject empty rectangle");
-            // Model an FX panel with controls to the left and above the plugin.
+            // The host container is already positioned in its FX panel. ViewRect origins
+            // must not be applied a second time to the native child.
             ViewRect requested{282, 125, 1468, 695};
             require(view->onSize(&requested) == kResultOk, "position before attachment");
             require(view->attached(host, kPlatformTypeHWND) == kResultOk, "attach editor");
-            HWND editor = FindWindowExA(host, nullptr, "Aulamix250Editor", nullptr);
+            HWND editor = GetWindow(host, GW_CHILD);
             require(editor != nullptr, "native editor exists");
+            char registeredClass[128]{};GetClassNameA(editor,registeredClass,sizeof(registeredClass));
             expectRect(editor, host, requested);
             ShowWindow(host, SW_SHOW);
             pump();
             require(IsWindowVisible(editor), "editor becomes visible with host");
             expectPaint(editor);
+            // Hosts may use GWLP_USERDATA when subclassing their embedded windows.
+            SetWindowLongPtrA(editor, GWLP_USERDATA, 12345);
+            expectPaint(editor);
+            SetWindowLongPtrA(editor, GWLP_USERDATA, 0);
             ViewRect moved{20, 30, 1206, 600};
             require(view->onSize(&moved) == kResultOk, "position after attachment");
             expectRect(editor, host, moved);
@@ -113,6 +159,26 @@ int main(int argc, char** argv) {
             require(view->getSize(&actual) == kResultOk && actual.left == moved.left &&
                     actual.top == moved.top && actual.getWidth() == 1186 && actual.getHeight() == 570,
                     "reported and native rectangles agree");
+            if(pass==0){
+                require(view->canResize()==kResultTrue,"host may resize the panel to fit available space");
+                for(float factor:{1.f,1.25f,1.5f,1.75f,2.f,2.5f,3.f,4.f,5.f,1.37f}){
+                    require(contentScale->setContentScaleFactor(factor)==kResultOk,"change display scale");
+                    ViewRect scaledSize;view->getSize(&scaledSize);
+                    require(scaledSize.getWidth()==std::lround(1186*factor)&&scaledSize.getHeight()==std::lround(570*factor),"physical dimensions at requested scale");
+                    expectRect(editor,host,scaledSize);expectPaint(editor);
+                    click(editor,260,450);
+                    require(controller->getParamNormalized(1)==0.,"reset mode through scaled control");
+                    click(editor,380,450);
+                    require(std::abs(controller->getParamNormalized(1)-.2)<.0001,"scaled pointer reaches the correct control");
+                    std::printf("PASS scale %.0f%% paint and input\n",factor*100);
+                }
+            }
+            ViewRect fitted{0,0,900,450};
+            require(view->checkSizeConstraint(&fitted)==kResultTrue&&view->onSize(&fitted)==kResultOk,"host can fit the whole panel into a smaller area");
+            expectPaint(editor);click(editor,260,450);require(controller->getParamNormalized(1)==0.,"input in resized panel");
+            require(contentScale->setContentScaleFactor(1.25f)==kResultOk,"125% while attached");
+            ViewRect scaled;view->getSize(&scaled);expectRect(editor,host,scaled);expectPaint(editor);
+            require(scaled.getWidth()==1483&&scaled.getHeight()==713,"125% attached dimensions");
             float left[256]{}, right[256]{}, outLeft[256]{}, outRight[256]{};
             float* input[]{left, right};
             float* output[]{outLeft, outRight};
@@ -147,7 +213,7 @@ int main(int argc, char** argv) {
                 if (owner != editor && owner != host) continue;
                 char name[128]{};
                 GetClassNameA(candidate, name, sizeof(name));
-                if (std::string(name) == "Aulamix250Presets") { found = candidate; break; }
+                if (std::string(name).find("EMT250Presets-") == 0) { found = candidate; break; }
             }
             HWND popup = found;
             require(popup && IsWindowVisible(popup), "owned preset browser opens");
@@ -161,11 +227,14 @@ int main(int argc, char** argv) {
             require(view->removed() == kResultOk, "detach editor");
             require(!IsWindow(editor) && !IsWindow(popup), "destroy editor and owned browser");
             require(view->attached(host, kPlatformTypeHWND) == kResultOk, "reattach same view");
-            editor = FindWindowExA(host, nullptr, "Aulamix250Editor", nullptr);
-            expectRect(editor, host, moved);
+            editor = GetWindow(host, GW_CHILD);
+            expectRect(editor, host, scaled);
             expectPaint(editor);
             require(view->removed() == kResultOk, "detach reattached view");
+            require(view->setFrame(nullptr)==kResultOk,"clear host frame");frame->release();contentScale->release();
             view->release();
+            WNDCLASSA obsolete{};
+            require(!GetClassInfoA(module,registeredClass,&obsolete), "unregister class after last view closes");
             ShowWindow(host, SW_HIDE);
         }
         processor->setProcessing(false);

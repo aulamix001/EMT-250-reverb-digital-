@@ -1,27 +1,35 @@
-EMT-250 Reverb — VST3 Windows 64 bits (experimental 0.2.2)
+EMT-250 Reverb 0.3.0 — Windows x64 — VST3 e VST2
 
-1. Feche a DAW.
-   Substitua a pasta EMT-250 Reverb.vst3 antiga pela versão deste ZIP.
-2. Copie a pasta inteira EMT-250 Reverb.vst3 para:
+Feche completamente o REAPER antes de substituir arquivos.
+
+VST3:
+1. Remova a pasta EMT-250 Reverb.vst3 antiga da pasta de plugins.
+2. Copie a pasta inteira EMT-250 Reverb.vst3 deste ZIP para:
    C:\Program Files\Common Files\VST3\
-3. Abra sua DAW de 64 bits e faça uma nova busca de plugins VST3.
-4. Procure por EMT-250 Reverb.
+3. Nao copie apenas o binario interno de Contents.
 
-A pasta .vst3 contém Contents\x86_64-win\EMT-250 Reverb.vst3.
-Não copie apenas o arquivo interno e não renomeie o ZIP para .vst3.
+VST2:
+1. Copie VST2\EMT-250 Reverb.dll para uma pasta de VST2, por exemplo:
+   C:\VSTPlugins\
+2. Adicione essa pasta em REAPER > Options > Preferences > Plug-ins > VST.
+3. A DLL VST2 nao deve ser instalada na pasta Common Files\VST3.
 
-Esta versão inclui editor gráfico nativo e janela flutuante de presets.
-Selecione a interface do plugin na DAW, em vez da visualização genérica de parâmetros.
-Clique no nome do preset para abrir a biblioteca. SAVE salva .a250; ... importa.
-A interface é uma recriação aproximada da referência, sem verificação pixel a pixel.
-O DSP continua sendo uma implementação própria aproximada.
-30 presets; os tempos R de Dual Delay, Hands Down Double e Jimmy Jam Delay
-continuam provisórios porque as fotos não mostram esse canal.
+No REAPER 7.84 x64 (Windows 11, inclusive escala 125%):
+- Preferences > Plug-ins > VST > Re-scan > Clear cache and re-scan.
+- Procure VST3: EMT-250 Reverb ou VST: EMT-250 Reverb.
+- As duas versoes sao instancias independentes. Use apenas uma por insert.
+- O painel 0.3.0 identifica VST3 ou VST2 no rodape.
+- A escala acompanha o host. A janela VST3 tambem aceita redimensionamento.
+- Remova Aulamix250.vst3 antigo se ainda estiver instalado.
 
-Compilado por cross-compilation MinGW para Windows x86-64.
-Não foi executado em Windows ou validado em uma DAW Windows neste ambiente.
-Foi executado via Wine, incluindo testes de posição, pintura e reabertura do editor.
-No REAPER, limpe o cache VST e refaça a busca após substituir a versão antiga.
-Consulte NATIVE.md para limitações e evidências de validação Linux.
+Se o painel continuar vazio:
+1. Abra a versao 0.3.0 na DAW.
+2. Execute ABRIR-DIAGNOSTICO.cmd deste ZIP ou abra:
+   %TEMP%\EMT250-ui.log
+3. Envie o texto das linhas 0.3.0. O arquivo registra chamadas do host,
+   criacao da janela, primeira pintura e erros Win32; nao contem audio ou chaves.
 
-Remova a pasta antiga Aulamix250.vst3 para evitar duplicatas e refaca a busca de plugins.
+Validacao: testes Windows x64 executados via Wine, testes DSP e validador
+Steinberg Linux. A sessao REAPER 7.84 da captura ainda nao foi reproduzida.
+Nao ha garantia de que toda causa do painel vazio nesse host foi eliminada.
+O DSP e proprio e aproximado; veja NATIVE.md e VALIDACAO.txt.

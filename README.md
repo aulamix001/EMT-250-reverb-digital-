@@ -1,6 +1,8 @@
-Download Windows x64 VST3: [EMT-250-Reverb-0.2.1-Windows-x64.zip](releases/EMT-250-Reverb-0.2.1-Windows-x64.zip). Instalação: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Versão 0.2.0 com editor gráfico nativo e janela flutuante de presets; ainda sem teste de execução em Windows.
+Download Windows x64 **VST3 + VST2 0.3.0**: [EMT-250-Reverb-0.3.0-Windows-x64-VST3-VST2.zip](releases/EMT-250-Reverb-0.3.0-Windows-x64-VST3-VST2.zip). Instalação e diagnóstico: [INSTALAR-WINDOWS.txt](INSTALAR-WINDOWS.txt). Interface Win32 compartilhada com suporte a DPI e escalas personalizadas, seis modos DSP e 30 presets. Testado via Wine; a falha informada no REAPER 7.84 x64 ainda requer confirmação nesse host.
 
-# EMT-250 Reverb — VST3 e biblioteca de presets
+Captura do painel a 125% em host de teste via Wine: [interface 0.3.0](releases/interface-0.3.0-125.png).
+
+# EMT-250 Reverb — VST3, VST2 e biblioteca de presets
 
 Versão nativa experimental: consulte [NATIVE.md](NATIVE.md). Contém seis modos DSP aproximados próprios e 30 presets mapeados. O VST3 Windows 0.2.0 possui interface gráfica nativa; Linux conserva o editor genérico. A interface web abaixo é um protótipo separado. Não é uma reprodução exata do algoritmo EMT/UAD.
 
@@ -10,7 +12,7 @@ Tabela consolidada: [MAPEAMENTO.csv](MAPEAMENTO.csv). Dados: [presets.json](pres
 
 Execute `npm start` em `/workspace/EMT-250-reverb-digital-` e abra a porta 8000 no seu ambiente de desenvolvimento. Sem dependências externas. Testes: `npm test`.
 
-Este projeto implementa a interface, mapeamento de parâmetros e gerenciamento de presets; **não implementa DSP, áudio ou VST/AU**. A topologia de áudio é descrita na interface para orientar a implementação posterior. Não reproduz os algoritmos proprietários, conversores ou ruído do hardware.
+Esta interface web implementa controles e presets; o DSP e os plugins nativos estão em `native/`. A interface web **não processa áudio nem carrega VST/AU**. A topologia de áudio é descrita na interface para orientar a implementação posterior. Não reproduz os algoritmos proprietários, conversores ou ruído do hardware.
 
 Clique no nome do preset para abrir a biblioteca. Busca textual, tags com união (OU), favoritos e presets locais são persistidos no localStorage do navegador. SAVE cria um preset; DELETE e RENAME atuam apenas nos presets criados pelo usuário. Tags selecionadas são atribuídas ao salvar. Presets de fábrica são aproximações criativas a partir dos nomes visíveis nas referências, não cópias dos presets UAD. Wet Solo e Noise são globais e iniciam ligados; não são alterados ao carregar presets.
 

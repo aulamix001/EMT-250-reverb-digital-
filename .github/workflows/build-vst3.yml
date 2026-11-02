@@ -1,4 +1,4 @@
-name: Build VST3
+name: Build VST3 and Windows VST2
 on:
   push:
     branches: [main]
@@ -27,9 +27,9 @@ jobs:
       - run: node scripts/native-presets.js
       - run: cmake -S . -B build -DVST3_SDK_ROOT=${{ github.workspace }}/sdk -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build --config Release --target Aulamix250 dsp-test --parallel 2
-      - name: Build Windows editor host regression test
+      - name: Build Windows VST2 and editor host tests
         if: runner.os == 'Windows'
-        run: cmake --build build --config Release --target windows-host-test --parallel 2
+        run: cmake --build build --config Release --target Aulamix250Vst2 windows-host-test vst2-host-test --parallel 2
       - run: ctest --test-dir build -C Release --output-on-failure
       - uses: actions/upload-artifact@v4
         with:
@@ -38,7 +38,19 @@ jobs:
       - name: Package Windows release
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path 'build/VST3/Release/EMT-250 Reverb.vst3',NATIVE.md,licenses -DestinationPath EMT-250-Reverb-Windows-x64.zip
+        run: |
+          New-Item -ItemType Directory -Force staging/VST2 | Out-Null
+          Copy-Item 'build/VST3/Release/EMT-250 Reverb.vst3' staging -Recurse
+          Copy-Item 'build/VST2/Release/EMT-250 Reverb.dll' staging/VST2
+          Copy-Item NATIVE.md,INSTALAR-WINDOWS.txt,licenses staging -Recurse
+          Copy-Item scripts/ABRIR-DIAGNOSTICO.cmd staging
+          Compress-Archive -Path staging/* -DestinationPath EMT-250-Reverb-Windows-x64.zip
+      - name: Upload Windows VST2
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: EMT-250-Reverb-VST2-Windows
+          path: build/VST2/Release/EMT-250 Reverb.dll
       - name: Package Linux release
         if: runner.os == 'Linux'
         run: tar -czf EMT-250-Reverb-Linux-x64.tar.gz -C build/VST3/Release "EMT-250 Reverb.vst3" -C "${{ github.workspace }}" NATIVE.md licenses

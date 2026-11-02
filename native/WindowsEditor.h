@@ -8,14 +8,22 @@
 #include <commdlg.h>
 #include <fstream>
 #include "public.sdk/source/common/pluginview.h"
+#include "pluginterfaces/gui/iplugviewcontentscalesupport.h"
 #include <functional>
 #include <set>
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <mutex>
+#include "UiDiagnostics.h"
+#include "NativeDpi.h"
 extern HINSTANCE ghInst;
-class WindowsEditor:public Steinberg::CPluginView {
+class WindowsEditor:public Steinberg::CPluginView,public Steinberg::IPlugViewContentScaleSupport {
  HWND window=nullptr,popup=nullptr,search=nullptr;std::function<double(int)> read;std::function<void(int,double)> write;std::function<void()> done;
+ std::function<void(int,int)> resizeHost;std::string formatName;bool firstPaint=true;float scale=1.f;bool scaleRequest=false;
+ inline static std::mutex classMutex;inline static int classUsers=0;
+ static const char* editorClass(){static std::string s="EMT250Editor-"+std::to_string((uintptr_t)ghInst);return s.c_str();}
+ static const char* presetClass(){static std::string s="EMT250Presets-"+std::to_string((uintptr_t)ghInst);return s.c_str();}
  int drag=-1,scroll=0;bool favOnly=false;std::string filter,query;std::set<int> favorites;std::vector<int> visible;std::array<double,13> clipboard{},slot{};bool copied=false,hasSlot=false;
  static constexpr int W=1186,H=570;HBITMAP texture=nullptr;
  static COLORREF rgb(int n){return RGB(n,n,n);} 
@@ -40,38 +48,106 @@ class WindowsEditor:public Steinberg::CPluginView {
  const char* lf[]={"X 0,5","X 1,0","X 1,5","X 2,0"};const char* hf[]={"X 0,25","X 0,33","X 0,50","max."};const char* output[]={"I","II - L","III - R","IV"};for(int j=0;j<4;++j){int y=359-j*70;text(d,390,y-6,lf[j],12);led(d,443,y,0,mode==0&&f[1]==j);text(d,532,y-6,std::to_string(j*5));led(d,518,y,1,(mode==1||mode==4)&&f[1]==j);text(d,564,y-6,hf[j],12);led(d,620,y,0,(mode==0||mode==4)&&f[2]==j);text(d,717,y-6,output[j]);led(d,704,y,1,(mode==1||mode==3)&&f[2]==j);text(d,896,y-6,std::to_string(j*20));led(d,882,y,1,f[3]==j);}text(d,301,408,"t",19);text(d,411,379,">",18);text(d,527,379,"ms");text(d,590,379,"<",18);text(d,702,379,"Output");text(d,817,409,"+td",18);text(d,894,379,"ms");
  const char*meters[]={"Register","0dB","-6dB","-12dB"};for(int i=0;i<4;++i){led(d,78,333+i*24,i==0?0:1,read(13)>=(i==0?1.:i==1?.5:i==2?.25:.125));text(d,94,326+i*24,meters[i]);}led(d,78,451,2,read(9)>.5);text(d,94,445,"Noise");
  const char*labels[]={"REV","DEL","PHAS","CHOR","ECHO","SPC"};int bx[]={246,369,409,449,489,529};for(int i=0;i<6;++i){button(d,bx[i],433,39,39,"",mode==i,i==0?0:1);if(mode!=i){COLORREF c=i==0?RGB(125,12,10):(i==3||i==5)?rgb(169):RGB(18,119,8);gradient(d,bx[i]+5,438,29,29,c,i==0?RGB(90,4,4):(i==3||i==5)?rgb(120):RGB(9,68,3));}text(d,bx[i]+7,449,labels[i],9,rgb(10));}text(d,591,428,"Front");text(d,583,477,"Rear");text(d,577,490,"Outputs");ellipse(d,598,444,26,27,read(6)>.5?RGB(229,190,66):rgb(185),rgb(20));ellipse(d,603,448,16,17,rgb(20),rgb(245));line(d,611,456,read(6)>.5?611:607,read(6)>.5?469:440,rgb(230),6);
- text(d,649,433,"0");text(d,825,433,"1");line(d,667,441,817,441,rgb(210));for(int j=0;j<=8;++j)line(d,667+j*19,441,667+j*19,435-(j%4==0?5:0),rgb(205));box(d,651,450,191,7,rgb(4));gradient(d,651+int(read(7)*140),448,50,14,rgb(96),rgb(12),true);text(d,707,475,"Dry/Wet",14);button(d,857,432,49,43,"WET",read(8)>.5,2);text(d,865,455,"SOLO",10,rgb(25));button(d,409,533,280,27,"EMT-250 Reverb - VST3");button(d,694,533,44,27,"INFO");text(d,749,542,"0.2.2",10);}
+ text(d,649,433,"0");text(d,825,433,"1");line(d,667,441,817,441,rgb(210));for(int j=0;j<=8;++j)line(d,667+j*19,441,667+j*19,435-(j%4==0?5:0),rgb(205));box(d,651,450,191,7,rgb(4));gradient(d,651+int(read(7)*140),448,50,14,rgb(96),rgb(12),true);text(d,707,475,"Dry/Wet",14);button(d,857,432,49,43,"WET",read(8)>.5,2);text(d,865,455,"SOLO",10,rgb(25));button(d,409,533,280,27,std::string("EMT-250 Reverb - ")+formatName);button(d,694,533,44,27,"INFO");text(d,749,542,"0.3.0",10);}
  void saveFile(){char path[MAX_PATH]="Preset.a250";OPENFILENAMEA f{};f.lStructSize=sizeof(f);f.hwndOwner=popup;f.lpstrFilter="Aulamix preset (*.a250)\0*.a250\0\0";f.lpstrFile=path;f.nMaxFile=MAX_PATH;f.lpstrDefExt="a250";f.Flags=OFN_OVERWRITEPROMPT;if(GetSaveFileNameA(&f)){std::ofstream out(path,std::ios::binary);for(int i=0;i<13;++i){double v=read(i);out.write((char*)&v,sizeof(v));}}}
  void openFile(){char path[MAX_PATH]="";OPENFILENAMEA f{};f.lStructSize=sizeof(f);f.hwndOwner=window;f.lpstrFilter="Aulamix preset (*.a250)\0*.a250\0\0";f.lpstrFile=path;f.nMaxFile=MAX_PATH;f.Flags=OFN_FILEMUSTEXIST;if(GetOpenFileNameA(&f)){std::ifstream in(path,std::ios::binary);std::array<double,13> values{};for(auto&v:values)if(!in.read((char*)&v,sizeof(v))||!std::isfinite(v)||v<0||v>1)return;for(int i=0;i<13;++i)write(i,values[i]);}}
  void rebuild(){visible.clear();for(int i=0;i<int(std::size(presets));++i){std::string n=name(i),q=query;std::transform(n.begin(),n.end(),n.begin(),::tolower);std::transform(q.begin(),q.end(),q.begin(),::tolower);if((filter.empty()||std::string(presets[i].name).find(filter)!=std::string::npos)&&n.find(q)!=std::string::npos&&(!favOnly||favorites.count(i)))visible.push_back(i);}scroll=std::clamp(scroll,0,std::max(0,int(visible.size())-10));}
  void paintPopup(HDC d){box(d,0,0,390,710,rgb(35));box(d,1,1,388,34,rgb(55));text(d,100,12,"EMT-250 Reverb PRESETS",12);text(d,366,9,"X",16);text(d,14,90,"TAGS",11);text(d,270,90,favOnly?"FAVORITES *":"FAVORITES",11);const char* ts[]={"Reverb","Best Of","Long","Short","Guitar","Vocal","Keys","Drums","Delay","Space","Echo","Chorus","Phase"};for(int i=0;i<13;++i)button(d,12+(i%3)*122,115+(i/3)*32,116,28,ts[i],filter==ts[i],2);text(d,16,289,name(current()),12);text(d,356,286,favorites.count(current())?"*":"+",20);button(d,12,314,116,28,"DELETE");button(d,136,314,116,28,"RENAME");button(d,260,314,116,28,"SAVE");box(d,8,348,374,347,rgb(21));rebuild();for(int j=scroll;j<int(visible.size())&&j<scroll+10;++j){int i=visible[j],y=352+(j-scroll)*33;if(i==current())box(d,12,y,366,32,rgb(60));text(d,22,y+10,name(i),12);if(favorites.count(i))text(d,355,y+8,"*",16);}text(d,12,698,"Roda do mouse: percorrer presets",10,rgb(135));}
- void floating(){if(popup){ShowWindow(popup,SW_SHOW);SetForegroundWindow(popup);return;}RECT r;GetWindowRect(window,&r);popup=CreateWindowExA(WS_EX_TOOLWINDOW,"Aulamix250Presets","Presets",WS_POPUP|WS_BORDER|WS_CAPTION|WS_SYSMENU,r.left+20,r.top+40,394,741,window,nullptr,ghInst,this);search=CreateWindowExA(WS_EX_CLIENTEDGE,"EDIT","",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,10,42,370,34,popup,(HMENU)1,ghInst,nullptr);ShowWindow(popup,SW_SHOW);}
+ void floating(){
+  if(popup){ShowWindow(popup,SW_SHOW);SetForegroundWindow(popup);return;}
+  RECT r;GetWindowRect(window,&r);RECT client;GetClientRect(window,&client);
+  float popScale=std::min({scale,client.right/float(W),client.bottom/float(H)});
+  DWORD style=WS_POPUP|WS_BORDER|WS_CAPTION|WS_SYSMENU;
+  RECT decoration{0,0,390,710};AdjustWindowRectEx(&decoration,style,FALSE,WS_EX_TOOLWINDOW);
+  MONITORINFO monitor{};monitor.cbSize=sizeof(monitor);
+  bool work=GetMonitorInfoA(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor)!=FALSE;
+  if(work){float width=float(monitor.rcWork.right-monitor.rcWork.left-(decoration.right-decoration.left-390)-16);float height=float(monitor.rcWork.bottom-monitor.rcWork.top-(decoration.bottom-decoration.top-710)-16);popScale=std::min({popScale,width/390,height/710});}
+  if(popScale<=0)return;
+  RECT size{0,0,int(std::lround(390*popScale)),int(std::lround(710*popScale))};AdjustWindowRectEx(&size,style,FALSE,WS_EX_TOOLWINDOW);
+  int width=size.right-size.left,height=size.bottom-size.top,x=r.left+20,y=r.top+40;
+  if(work){x=std::clamp(x,int(monitor.rcWork.left),int(monitor.rcWork.right-width));y=std::clamp(y,int(monitor.rcWork.top),int(monitor.rcWork.bottom-height));}
+  popup=CreateWindowExA(WS_EX_TOOLWINDOW,presetClass(),"Presets",style,x,y,width,height,window,nullptr,ghInst,this);
+  if(!popup){uiDiagnostic("preset CreateWindowEx failed error=%lu",GetLastError());return;}
+  search=CreateWindowExA(WS_EX_CLIENTEDGE,"EDIT","",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,int(std::lround(10*popScale)),int(std::lround(42*popScale)),int(std::lround(370*popScale)),int(std::lround(34*popScale)),popup,(HMENU)1,ghInst,nullptr);ShowWindow(popup,SW_SHOW);
+ }
+
  void move(int x,int y){if(drag>=2&&drag<=5){int i=drag-2,mode=int(std::round(read(1)*5));if((mode==5&&i<3)||(mode==3&&i<2)||(mode==2&&(i==1||i==2)))return;double n=std::clamp(double(359-y)/(i==0?269:210),0.,1.);int steps=i==0?15:3;write(drag,std::round(n*steps)/steps);if(mode==1&&i==2){int t=int(std::round(read(read(4)<.5?11:12)*63))*5;write(2,(t/20)/15.);write(3,((t%20)/5)/3.);}if(mode==1&&(i==0||i==1))write(read(4)<.5?11:12,(std::round(read(2)*15)*20+std::round(read(3)*3)*5)/315.);}else if(drag==7)write(7,std::clamp(double(x-676)/140,0.,1.));InvalidateRect(window,nullptr,FALSE);}
  void click(int x,int y){if(y<45){if(x<30)preset(current()-1);else if(x<58)preset(current()+1);else if(x<339)floating();else if(x<374)write(10,1-read(10));else if(x>=441&&x<494){for(int i=0;i<13;++i)clipboard[i]=read(i);copied=true;}else if(x>=495&&x<548&&copied){for(int i=0;i<13;++i)write(i,clipboard[i]);}else if(x>=378&&x<437){if(!hasSlot){for(int i=0;i<13;++i)slot[i]=read(i);hasSlot=true;}else for(int i=0;i<13;++i){double v=read(i);write(i,slot[i]);slot[i]=v;}}else if(x>=1154)openFile();else if(x>1060)MessageBoxA(window,"Use a automacao de parametros da sua DAW.\nEMT-250 Reverb - DSP proprio aproximado.","EMT-250 Reverb",MB_OK);return;}
  if(x>65&&x<100&&y>80&&y<120)write(10,1-read(10));if(x<170&&y>430&&y<470)write(9,1-read(9));int bx[]={246,369,409,449,489,529};for(int i=0;i<6;++i)if(x>=bx[i]&&x<bx[i]+39&&y>433&&y<473)write(1,i/5.);if(x>590&&x<634&&y>439&&y<477)write(6,1-read(6));if(x>855&&x<908&&y>430&&y<476)write(8,1-read(8));if(y>74&&y<408){int xs[]={310,482,658,834};for(int i=0;i<4;++i)if(std::abs(x-xs[i])<31){drag=2+i;SetCapture(window);move(x,y);}}if(x>650&&x<845&&y>442&&y<466){drag=7;SetCapture(window);move(x,y);}}
- static LRESULT CALLBACK proc(HWND h,UINT m,WPARAM w,LPARAM l){auto*self=(WindowsEditor*)GetWindowLongPtr(h,GWLP_USERDATA);if(m==WM_NCCREATE){self=(WindowsEditor*)((CREATESTRUCT*)l)->lpCreateParams;SetWindowLongPtr(h,GWLP_USERDATA,(LONG_PTR)self);}if(!self)return DefWindowProc(h,m,w,l);bool pop=h==self->popup;if(m==WM_PRINTCLIENT){if(pop)self->paintPopup((HDC)w);else self->paint((HDC)w);return 0;}if(m==WM_ERASEBKGND)return 1;if(m==WM_PAINT){PAINTSTRUCT ps;HDC d=BeginPaint(h,&ps),mem=CreateCompatibleDC(d);RECT r;GetClientRect(h,&r);auto bm=CreateCompatibleBitmap(d,r.right,r.bottom);auto old=SelectObject(mem,bm);if(pop)self->paintPopup(mem);else self->paint(mem);BitBlt(d,0,0,r.right,r.bottom,mem,0,0,SRCCOPY);SelectObject(mem,old);DeleteObject(bm);DeleteDC(mem);EndPaint(h,&ps);return 0;}if(m==WM_TIMER){InvalidateRect(h,nullptr,FALSE);return 0;}if(pop){if(m==WM_CLOSE){ShowWindow(h,SW_HIDE);return 0;}if(m==WM_COMMAND&&HIWORD(w)==EN_CHANGE){char b[256];GetWindowTextA(self->search,b,256);self->query=b;self->scroll=0;InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_MOUSEWHEEL){self->scroll+=GET_WHEEL_DELTA_WPARAM(w)>0?-2:2;InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_LBUTTONDOWN){int x=GET_X_LPARAM(l),y=GET_Y_LPARAM(l);if(y<35&&x>350)ShowWindow(h,SW_HIDE);else if(y<35)SendMessage(h,WM_NCLBUTTONDOWN,HTCAPTION,0);else if(y>80&&y<108){self->favOnly=!self->favOnly;}else if(y>=115&&y<275){int i=(y-115)/32*3+(x-12)/122;const char*ts[]={"Reverb","Best Of","Long","Short","Guitar","Vocal","Keys","Drums","Delay","Space","Echo","Chorus","Phase"};if(i>=0&&i<13){self->filter=self->filter==ts[i]?"":ts[i];self->scroll=0;}}else if(y>280&&y<315&&x>340){int i=self->current();if(self->favorites.count(i))self->favorites.erase(i);else self->favorites.insert(i);}else if(y>=314&&y<343){if(x>260)self->saveFile();else MessageBoxA(h,"Presets de fabrica sao protegidos. Use SAVE para gravar uma copia .a250.","Presets",MB_OK);}else if(y>=352&&y<683){self->rebuild();int i=(y-352)/33+self->scroll;if(i<int(self->visible.size()))self->preset(self->visible[i]);}InvalidateRect(h,nullptr,FALSE);return 0;}}else{if(m==WM_LBUTTONDOWN){self->click(GET_X_LPARAM(l),GET_Y_LPARAM(l));InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_MOUSEMOVE&&self->drag>=0){self->move(GET_X_LPARAM(l),GET_Y_LPARAM(l));return 0;}if(m==WM_LBUTTONUP){self->drag=-1;ReleaseCapture();return 0;}}return DefWindowProc(h,m,w,l);}
+ void render(HWND h,HDC target,bool pop){
+  RECT client{};GetClientRect(h,&client);if(client.right<=0||client.bottom<=0)return;
+  int width=pop?390:W,height=pop?710:H;
+  HDC buffer=CreateCompatibleDC(target);HBITMAP bitmap=CreateCompatibleBitmap(target,width,height);
+  if(!buffer||!bitmap){uiDiagnostic("paint buffer failed error=%lu",GetLastError());if(bitmap)DeleteObject(bitmap);if(buffer)DeleteDC(buffer);return;}
+  auto previous=SelectObject(buffer,bitmap);if(pop)paintPopup(buffer);else paint(buffer);
+  int oldMode=SetStretchBltMode(target,HALFTONE);POINT oldOrigin{};SetBrushOrgEx(target,0,0,&oldOrigin);
+  StretchBlt(target,0,0,client.right,client.bottom,buffer,0,0,width,height,SRCCOPY);
+  SetBrushOrgEx(target,oldOrigin.x,oldOrigin.y,nullptr);SetStretchBltMode(target,oldMode);SelectObject(buffer,previous);DeleteObject(bitmap);DeleteDC(buffer);
+ }
+ static POINT logicalPoint(HWND h,LPARAM value,bool pop){
+  RECT client{};GetClientRect(h,&client);
+  return {LONG(std::lround(double(GET_X_LPARAM(value))*(pop?390:W)/std::max(1L,client.right))),LONG(std::lround(double(GET_Y_LPARAM(value))*(pop?710:H)/std::max(1L,client.bottom)))};
+ }
+ static LRESULT CALLBACK proc(HWND h,UINT m,WPARAM w,LPARAM l){auto*self=(WindowsEditor*)GetWindowLongPtrA(h,0);if(m==WM_NCCREATE){auto*create=(CREATESTRUCTA*)l;self=(WindowsEditor*)create->lpCreateParams;if(!self)return FALSE;SetWindowLongPtrA(h,0,(LONG_PTR)self);SetWindowLongPtrA(h,sizeof(LONG_PTR),strcmp(create->lpszClass,presetClass())==0);uiDiagnostic("WM_NCCREATE hwnd=%p parent=%p instance=%p",h,create->hwndParent,create->hInstance);return TRUE;}if(!self)return DefWindowProcA(h,m,w,l);bool pop=GetWindowLongPtrA(h,sizeof(LONG_PTR))!=0;if(m==WM_NCDESTROY){SetWindowLongPtrA(h,0,0);if(h==self->window)self->window=nullptr;if(h==self->popup){self->popup=nullptr;self->search=nullptr;}return DefWindowProcA(h,m,w,l);}if(m==WM_PRINTCLIENT){self->render(h,(HDC)w,pop);return 0;}if(m==WM_ERASEBKGND)return 1;if(m==WM_PAINT){if(!pop&&self->firstPaint){uiDiagnostic("first WM_PAINT hwnd=%p",h);self->firstPaint=false;}PAINTSTRUCT ps;HDC d=BeginPaint(h,&ps);self->render(h,d,pop);EndPaint(h,&ps);return 0;}if(m==0x02E3&&!pop&&self->formatName=="VST2"){self->setContentScaleFactor(nativeDpiScale(h));return 0;}if(m==WM_TIMER){InvalidateRect(h,nullptr,FALSE);return 0;}if(pop){if(m==WM_CLOSE){ShowWindow(h,SW_HIDE);return 0;}if(m==WM_COMMAND&&HIWORD(w)==EN_CHANGE){char b[256]{};GetWindowTextA((HWND)l,b,256);self->query=b;self->scroll=0;InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_MOUSEWHEEL){self->scroll+=GET_WHEEL_DELTA_WPARAM(w)>0?-2:2;InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_LBUTTONDOWN){POINT point=logicalPoint(h,l,true);int x=point.x,y=point.y;if(y<35&&x>350)ShowWindow(h,SW_HIDE);else if(y<35)SendMessage(h,WM_NCLBUTTONDOWN,HTCAPTION,0);else if(y>80&&y<108){self->favOnly=!self->favOnly;}else if(y>=115&&y<275){int i=(y-115)/32*3+(x-12)/122;const char*ts[]={"Reverb","Best Of","Long","Short","Guitar","Vocal","Keys","Drums","Delay","Space","Echo","Chorus","Phase"};if(i>=0&&i<13){self->filter=self->filter==ts[i]?"":ts[i];self->scroll=0;}}else if(y>280&&y<315&&x>340){int i=self->current();if(self->favorites.count(i))self->favorites.erase(i);else self->favorites.insert(i);}else if(y>=314&&y<343){if(x>260)self->saveFile();else MessageBoxA(h,"Presets de fabrica sao protegidos. Use SAVE para gravar uma copia .a250.","Presets",MB_OK);}else if(y>=352&&y<683){self->rebuild();int i=(y-352)/33+self->scroll;if(i<int(self->visible.size()))self->preset(self->visible[i]);}InvalidateRect(h,nullptr,FALSE);return 0;}}else{if(m==WM_LBUTTONDOWN){POINT point=logicalPoint(h,l,false);self->click(point.x,point.y);InvalidateRect(h,nullptr,FALSE);return 0;}if(m==WM_MOUSEMOVE&&self->drag>=0){POINT point=logicalPoint(h,l,false);self->move(point.x,point.y);return 0;}if(m==WM_LBUTTONUP){self->drag=-1;ReleaseCapture();return 0;}}return DefWindowProcA(h,m,w,l);}
 public:
- WindowsEditor(std::function<double(int)>r,std::function<void(int,double)>w,std::function<void()>finish):read(r),write(w),done(finish){rect={0,0,W,H};makeTexture();WNDCLASSA wc{};wc.lpfnWndProc=proc;wc.hInstance=ghInst;wc.lpszClassName="Aulamix250Editor";wc.hCursor=LoadCursor(nullptr,IDC_ARROW);RegisterClassA(&wc);wc.lpszClassName="Aulamix250Presets";RegisterClassA(&wc);}
- ~WindowsEditor(){removed();if(texture)DeleteObject(texture);done();}
+ WindowsEditor(std::function<double(int)>r,std::function<void(int,double)>w,std::function<void()>finish,std::string format="VST3",std::function<void(int,int)>resize={}):read(r),write(w),done(finish),resizeHost(std::move(resize)),formatName(std::move(format)){
+  rect={0,0,W,H};makeTexture();
+  std::lock_guard<std::mutex> lock(classMutex);
+  if(classUsers++==0){
+   WNDCLASSA wc{};wc.lpfnWndProc=proc;wc.hInstance=ghInst;wc.cbWndExtra=2*sizeof(LONG_PTR);wc.hCursor=LoadCursor(nullptr,IDC_ARROW);
+   wc.lpszClassName=editorClass();ATOM main=RegisterClassA(&wc);DWORD mainError=main?0:GetLastError();
+   wc.lpszClassName=presetClass();ATOM popupAtom=RegisterClassA(&wc);
+   uiDiagnostic("register classes instance=%p main=%u error=%lu popup=%u error=%lu",ghInst,main,mainError,popupAtom,popupAtom?0:GetLastError());
+  }
+ }
+ ~WindowsEditor(){removed();if(texture)DeleteObject(texture);{std::lock_guard<std::mutex> lock(classMutex);if(--classUsers==0){UnregisterClassA(presetClass(),ghInst);UnregisterClassA(editorClass(),ghInst);}}done();}
+ Steinberg::uint32 PLUGIN_API addRef()override{return CPluginView::addRef();}
+ Steinberg::uint32 PLUGIN_API release()override{return CPluginView::release();}
+ Steinberg::tresult PLUGIN_API queryInterface(const Steinberg::TUID iid,void**object)override{
+  if(!object)return Steinberg::kInvalidArgument;
+  if(Steinberg::FUnknownPrivate::iidEqual(iid,Steinberg::IPlugViewContentScaleSupport::iid)){
+   *object=static_cast<Steinberg::IPlugViewContentScaleSupport*>(this);addRef();return Steinberg::kResultOk;
+  }
+  return CPluginView::queryInterface(iid,object);
+ }
+ Steinberg::tresult PLUGIN_API setContentScaleFactor(ScaleFactor factor)override{
+  if(!std::isfinite(factor)||factor<=0||W*double(factor)>32767||H*double(factor)>32767||std::lround(W*factor)<1||std::lround(H*factor)<1||scaleRequest)return Steinberg::kInvalidArgument;
+  auto next=rect;next.right=next.left+int(std::lround(W*factor));next.bottom=next.top+int(std::lround(H*factor));
+  if(factor==scale&&next.getWidth()==rect.getWidth()&&next.getHeight()==rect.getHeight())return Steinberg::kResultOk;
+  uiDiagnostic("setContentScaleFactor=%g",double(factor));scaleRequest=true;
+  auto result=plugFrame?plugFrame->resizeView(static_cast<Steinberg::IPlugView*>(this),&next):onSize(&next);
+  scaleRequest=false;if(result!=Steinberg::kResultOk)return result;
+  scale=factor;if(popup){DestroyWindow(popup);popup=nullptr;search=nullptr;}
+  if(window&&resizeHost)resizeHost(next.getWidth(),next.getHeight());
+  return Steinberg::kResultOk;
+ }
+ Steinberg::tresult PLUGIN_API canResize()override{return Steinberg::kResultTrue;}
+ Steinberg::tresult PLUGIN_API checkSizeConstraint(Steinberg::ViewRect*size)override{
+  return size&&size->getWidth()>0&&size->getHeight()>0&&size->getWidth()<=32767&&size->getHeight()<=32767?Steinberg::kResultTrue:Steinberg::kResultFalse;
+ }
  Steinberg::tresult PLUGIN_API isPlatformTypeSupported(Steinberg::FIDString type)override{return type&&strcmp(type,Steinberg::kPlatformTypeHWND)==0?Steinberg::kResultTrue:Steinberg::kResultFalse;}
  Steinberg::tresult PLUGIN_API onSize(Steinberg::ViewRect*size)override{
   if(!size||size->getWidth()<=0||size->getHeight()<=0)return Steinberg::kInvalidArgument;
-  // Hosts may supply an offset inside their FX panel, before or after attached().
-  // CPluginView only stores this rectangle; it does not move the native window.
-  if(window&&!SetWindowPos(window,nullptr,size->left,size->top,size->getWidth(),size->getHeight(),SWP_NOACTIVATE|SWP_NOZORDER))return Steinberg::kResultFalse;
+  // The host owns the container position; the child uses its local origin,
+  // matching the SDK VSTGUI editor. ViewRect dimensions resize the child.
+  uiDiagnostic("onSize rect=%ld,%ld,%ld,%ld hwnd=%p",long(size->left),long(size->top),long(size->right),long(size->bottom),window);
+  if(window&&!SetWindowPos(window,nullptr,0,0,size->getWidth(),size->getHeight(),SWP_NOACTIVATE|SWP_NOZORDER)){uiDiagnostic("SetWindowPos failed error=%lu",GetLastError());return Steinberg::kResultFalse;}
   rect=*size;
   if(window)RedrawWindow(window,nullptr,nullptr,RDW_INVALIDATE|RDW_UPDATENOW);
   return Steinberg::kResultOk;
  }
  Steinberg::tresult PLUGIN_API attached(void*parent,Steinberg::FIDString type)override{
+  uiDiagnostic("attached parent=%p valid=%d platform=%s",parent,IsWindow((HWND)parent),type?type:"(null)");
   if(!IsWindow((HWND)parent)||isPlatformTypeSupported(type)!=Steinberg::kResultTrue)return Steinberg::kResultFalse;
+  DWORD parentPid=0;DWORD parentThread=GetWindowThreadProcessId((HWND)parent,&parentPid);RECT parentBounds{};GetClientRect((HWND)parent,&parentBounds);uiDiagnostic("container pid=%lu tid=%lu size=%ldx%ld",parentPid,parentThread,parentBounds.right,parentBounds.bottom);
   removed();
-  window=CreateWindowExA(0,"Aulamix250Editor","",WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS,rect.left,rect.top,rect.getWidth(),rect.getHeight(),(HWND)parent,nullptr,ghInst,this);
-  if(!window)return Steinberg::kResultFalse;
+  window=CreateWindowExA(0,editorClass(),"",WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,0,0,rect.getWidth(),rect.getHeight(),(HWND)parent,nullptr,ghInst,this);
+  if(!window){uiDiagnostic("CreateWindowEx failed error=%lu",GetLastError());return Steinberg::kResultFalse;}
+  uiDiagnostic("attached child=%p parent=%p",window,parent);firstPaint=true;
   systemWindow=parent;SetTimer(window,1,100,nullptr);
   RedrawWindow(window,nullptr,nullptr,RDW_INVALIDATE|RDW_UPDATENOW);
   return Steinberg::kResultOk;
  }
- Steinberg::tresult PLUGIN_API removed()override{if(popup){DestroyWindow(popup);popup=nullptr;}if(window){KillTimer(window,1);DestroyWindow(window);window=nullptr;}systemWindow=nullptr;return Steinberg::kResultOk;}
+ Steinberg::tresult PLUGIN_API removed()override{if(popup){DestroyWindow(popup);popup=nullptr;search=nullptr;}if(window){uiDiagnostic("removed hwnd=%p",window);KillTimer(window,1);DestroyWindow(window);window=nullptr;}systemWindow=nullptr;return Steinberg::kResultOk;}
 };
 #endif

@@ -16,7 +16,7 @@ vst2::Ptr host(vst2::Effect*,vst2::Int op,vst2::Int,vst2::Ptr,void*,float) {
 }
 void check(bool ok,const char* s) {if(!ok)throw std::runtime_error(s);std::printf("PASS %s\n",s);std::fflush(stdout);}
 void pump(){MSG m;for(int i=0;i<5;++i){while(PeekMessage(&m,nullptr,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessage(&m);}Sleep(20);}}
-void click(HWND h,int x,int y){SendMessage(h,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(x,y));SendMessage(h,WM_LBUTTONUP,0,MAKELPARAM(x,y));pump();}
+void click(HWND h,int x,int y){RECT client{};GetClientRect(h,&client);double zoom=std::min(client.right/958.,client.bottom/403.);x=int(std::lround((client.right-958*zoom)/2+x*zoom));y=int(std::lround((client.bottom-403*zoom)/2+(y+32)*zoom));SendMessage(h,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(x,y));SendMessage(h,WM_LBUTTONUP,0,MAKELPARAM(x,y));pump();}
 }
 int main(int argc,char**argv) {try{
     check(argc==2,"VST2 DLL argument");
@@ -52,13 +52,13 @@ int main(int argc,char**argv) {try{
     check(effect->getParameter(effect,7)==.375f,"state round trip");
     check(dispatch(vst2::SetChunk,0,bytes-1,saved.data())==0,"reject truncated state");
     for(int program=0;program<30;++program){dispatch(vst2::SetProgram,0,program);check(dispatch(vst2::GetProgram)==program,"select factory program");}
-    vst2::Rect* size=nullptr;check(dispatch(vst2::EditGetRect,0,0,&size)==1&&size&&size->right==958&&size->bottom==371,"editor dimensions");
+    vst2::Rect* size=nullptr;check(dispatch(vst2::EditGetRect,0,0,&size)==1&&size&&size->right==958&&size->bottom==403,"editor dimensions");
     HWND parent=CreateWindowExA(0,"STATIC","VST2 host test",WS_OVERLAPPEDWINDOW|WS_VISIBLE,282,125,1300,750,nullptr,nullptr,GetModuleHandle(nullptr),nullptr);check(parent,"host HWND");
     for(int pass=0;pass<3;++pass){
         check(dispatch(vst2::EditOpen,0,0,parent)==1,"open VST2 editor");pump();HWND editor=GetWindow(parent,GW_CHILD);check(editor&&IsWindowVisible(editor),"visible native VST2 editor");
-        SetWindowLongPtrA(editor,GWLP_USERDATA,12345);click(editor,311,325);check(std::abs(effect->getParameter(effect,1)-.2f)<.0001,"mode from UI");
+        check(dispatch(50,0x50726553,0x41654373,nullptr,1.25f)==1,"VST2 host DPI extension accepts 125%");check(size->right==1198&&size->bottom==504,"VST2 DPI dimensions");SetWindowLongPtrA(editor,GWLP_USERDATA,12345);click(editor,311,325);check(std::abs(effect->getParameter(effect,1)-.2f)<.0001,"mode from UI");
         click(editor,208,325);click(editor,244,10);check(effect->getParameter(effect,2)==1,"fader from UI");check(edits>0,"UI sends host automation");
-        click(editor,100,65);HWND popup=nullptr;
+        click(editor,200,-16);HWND popup=nullptr;
         for(HWND w=GetTopWindow(nullptr);w;w=GetWindow(w,GW_HWNDNEXT)){char name[128]{};GetClassNameA(w,name,sizeof(name));HWND owner=GetWindow(w,GW_OWNER);if((owner==editor||owner==parent)&&std::string(name).find("EMT250Presets-")==0){popup=w;break;}}
         check(popup&&IsWindowVisible(popup),"VST2 preset browser");
         check(dispatch(vst2::EditClose)==1&&!IsWindow(editor)&&!IsWindow(popup),"close VST2 editor and browser");

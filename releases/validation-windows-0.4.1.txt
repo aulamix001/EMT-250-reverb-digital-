@@ -1,0 +1,450 @@
+0.4.1 Windows x64 VST3/VST2
+Barra de presets restaurada, comandos A/B/COPY/PASTE e presets testados.
+VST2 supportsViewDpiScaling e PreS/AeCs testados a 125%.
+Mesmo renderizador GDI+ de alta resolucao nos dois formatos.
+Validacao via Wine; confirmacao na DAW Windows nativa pendente.
+
+Internal ctest changing into directory: /workspace/build-windows
+Test project /workspace/build-windows
+    Start 1: DSP
+1/3 Test #1: DSP ..............................   Passed    5.66 sec
+    Start 2: WindowsHost
+2/3 Test #2: WindowsHost ......................   Passed   21.44 sec
+    Start 3: VST2Host
+3/3 Test #3: VST2Host .........................   Passed    9.06 sec
+
+100% tests passed, 0 tests failed out of 3
+
+Total Test time (real) =  36.16 sec
+Start testing: Nov 02 12:51 UTC
+----------------------------------------------------------
+1/3 Testing: DSP
+1/3 Test: DSP
+Command: "/workspace/tooling/root/usr/lib/wine/wine64" "/workspace/build-windows/dsp-test.exe"
+Directory: /workspace/build-windows
+"DSP" start time: Nov 02 12:51 UTC
+Output:
+----------------------------------------------------------
+wine: Call from 00006FFFFF3FCF77 to unimplemented function ole32.dll.CoInitialize, aborting
+wine: Unimplemented function ole32.dll.CoInitialize called at address 00006FFFFF3FCF77 (thread 00ac), starting debugger...
+6 modes: impulse output finite and nonzero; stereo bypass exact
+<end of output>
+Test time =   5.66 sec
+----------------------------------------------------------
+Test Passed.
+"DSP" end time: Nov 02 12:51 UTC
+"DSP" time elapsed: 00:00:05
+----------------------------------------------------------
+
+2/3 Testing: WindowsHost
+2/3 Test: WindowsHost
+Command: "/workspace/tooling/root/usr/lib/wine/wine64" "/workspace/build-windows/windows-host-test.exe" "/workspace/build-windows/VST3/EMT-250 Reverb.vst3"
+Directory: /workspace/build-windows
+"WindowsHost" start time: Nov 02 12:51 UTC
+Output:
+----------------------------------------------------------
+wine: Call from 00006FFFFF3FCF77 to unimplemented function ole32.dll.CoInitialize, aborting
+wine: Unimplemented function ole32.dll.CoInitialize called at address 00006FFFFF3FCF77 (thread 00a8), starting debugger...
+PASS VST3 module argument
+PASS load VST3 module
+PASS InitDll
+PASS factory export
+PASS class info
+PASS instantiate component
+PASS initialize component
+PASS controller interface
+PASS processor interface
+PASS setup processor
+PASS create initially hidden host
+PASS create editor
+PASS content scale interface
+PASS 125% before frame and attachment
+PASS 125% physical dimensions before frame
+PASS host frame
+PASS resize negotiation with host
+PASS reject null platform
+PASS reject missing parent
+PASS reject missing rectangle
+PASS reject empty rectangle
+PASS position before attachment
+PASS attach editor
+PASS native editor exists
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS editor becomes visible with host
+PASS host print request renders the panel rather than a blank surface
+PASS host print request renders the panel rather than a blank surface
+PASS position after attachment
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS reported and native rectangles agree
+PASS host may resize the panel to fit available space
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 100% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS capture scaled panel
+PASS snapshot file
+PASS snapshot written
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 125% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 150% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 175% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 200% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 250% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 300% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 400% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 500% paint and input
+PASS change display scale
+PASS physical dimensions at requested scale
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS reset mode through scaled control
+PASS scaled pointer reaches the correct control
+PASS scale 137% paint and input
+PASS host can fit the whole panel into a smaller area
+PASS host print request renders the panel rather than a blank surface
+PASS input in resized panel
+PASS 125% while attached
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS 125% attached dimensions
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS fader updates host parameter
+PASS edit comparison B
+PASS restore comparison A
+PASS restore comparison B
+PASS copy and paste complete state
+PASS owned preset browser opens
+PASS preset search control
+PASS filtered preset selection
+PASS process preset state
+PASS detach editor
+PASS destroy editor and owned browser
+PASS reattach same view
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS detach reattached view
+PASS clear host frame
+PASS unregister class after last view closes
+PASS create editor
+PASS content scale interface
+PASS 125% before frame and attachment
+PASS 125% physical dimensions before frame
+PASS host frame
+PASS resize negotiation with host
+PASS reject null platform
+PASS reject missing parent
+PASS reject missing rectangle
+PASS reject empty rectangle
+PASS position before attachment
+PASS attach editor
+PASS native editor exists
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS editor becomes visible with host
+PASS host print request renders the panel rather than a blank surface
+PASS host print request renders the panel rather than a blank surface
+PASS position after attachment
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS reported and native rectangles agree
+PASS host can fit the whole panel into a smaller area
+PASS host print request renders the panel rather than a blank surface
+PASS input in resized panel
+PASS 125% while attached
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS 125% attached dimensions
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS fader updates host parameter
+PASS edit comparison B
+PASS restore comparison A
+PASS restore comparison B
+PASS copy and paste complete state
+PASS owned preset browser opens
+PASS preset search control
+PASS filtered preset selection
+PASS process preset state
+PASS detach editor
+PASS destroy editor and owned browser
+PASS reattach same view
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS detach reattached view
+PASS clear host frame
+PASS unregister class after last view closes
+PASS create editor
+PASS content scale interface
+PASS 125% before frame and attachment
+PASS 125% physical dimensions before frame
+PASS host frame
+PASS resize negotiation with host
+PASS reject null platform
+PASS reject missing parent
+PASS reject missing rectangle
+PASS reject empty rectangle
+PASS position before attachment
+PASS attach editor
+PASS native editor exists
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS editor becomes visible with host
+PASS host print request renders the panel rather than a blank surface
+PASS host print request renders the panel rather than a blank surface
+PASS position after attachment
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS reported and native rectangles agree
+PASS host can fit the whole panel into a smaller area
+PASS host print request renders the panel rather than a blank surface
+PASS input in resized panel
+PASS 125% while attached
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS 125% attached dimensions
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS mode button updates host parameter
+PASS process UI-selected mode
+PASS finite stereo output
+PASS fader updates host parameter
+PASS edit comparison B
+PASS restore comparison A
+PASS restore comparison B
+PASS copy and paste complete state
+PASS owned preset browser opens
+PASS preset search control
+PASS filtered preset selection
+PASS process preset state
+PASS detach editor
+PASS destroy editor and owned browser
+PASS reattach same view
+PASS read native editor bounds
+PASS native editor stays at the host container local origin
+PASS host print request renders the panel rather than a blank surface
+PASS detach reattached view
+PASS clear host frame
+PASS unregister class after last view closes
+PASS ExitDll
+WINDOWS HOST TEST PASSED
+<end of output>
+Test time =  21.44 sec
+----------------------------------------------------------
+Test Passed.
+"WindowsHost" end time: Nov 02 12:51 UTC
+"WindowsHost" time elapsed: 00:00:21
+----------------------------------------------------------
+
+3/3 Testing: VST2Host
+3/3 Test: VST2Host
+Command: "/workspace/tooling/root/usr/lib/wine/wine64" "/workspace/build-windows/vst2-host-test.exe" "/workspace/build-windows/VST2/EMT-250 Reverb.dll"
+Directory: /workspace/build-windows
+"VST2Host" start time: Nov 02 12:51 UTC
+Output:
+----------------------------------------------------------
+wine: Call from 00006FFFFF3FCF77 to unimplemented function ole32.dll.CoInitialize, aborting
+wine: Unimplemented function ole32.dll.CoInitialize called at address 00006FFFFF3FCF77 (thread 00ac), starting debugger...
+PASS VST2 DLL argument
+PASS load VST2 DLL
+PASS VSTPluginMain export
+PASS VST2 magic
+PASS stereo parameters and 30 factory programs
+PASS editor replacing and chunk flags
+PASS open VST2 instance
+PASS VST 2.4 protocol
+PASS sample rate
+PASS activate audio
+PASS mode has finite nonzero impulse output
+PASS mode has finite nonzero impulse output
+PASS mode has finite nonzero impulse output
+PASS mode has finite nonzero impulse output
+PASS mode has finite nonzero impulse output
+PASS mode has finite nonzero impulse output
+PASS exact stereo bypass
+PASS legacy accumulating process
+PASS state chunk
+PASS restore state
+PASS state round trip
+PASS reject truncated state
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS select factory program
+PASS editor dimensions
+PASS host HWND
+PASS open VST2 editor
+PASS visible native VST2 editor
+PASS VST2 host DPI extension accepts 125%
+PASS VST2 DPI dimensions
+PASS mode from UI
+PASS fader from UI
+PASS UI sends host automation
+PASS VST2 preset browser
+PASS close VST2 editor and browser
+PASS open VST2 editor
+PASS visible native VST2 editor
+PASS VST2 host DPI extension accepts 125%
+PASS VST2 DPI dimensions
+PASS mode from UI
+PASS fader from UI
+PASS UI sends host automation
+PASS VST2 preset browser
+PASS close VST2 editor and browser
+PASS open VST2 editor
+PASS visible native VST2 editor
+PASS VST2 host DPI extension accepts 125%
+PASS VST2 DPI dimensions
+PASS mode from UI
+PASS fader from UI
+PASS UI sends host automation
+PASS VST2 preset browser
+PASS close VST2 editor and browser
+VST2 HOST TEST PASSED
+<end of output>
+Test time =   9.06 sec
+----------------------------------------------------------
+Test Passed.
+"VST2Host" end time: Nov 02 12:51 UTC
+"VST2Host" time elapsed: 00:00:09
+----------------------------------------------------------
+
+End testing: Nov 02 12:51 UTC

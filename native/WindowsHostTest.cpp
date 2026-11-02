@@ -35,7 +35,7 @@ static void click(HWND window, int x, int y) {
     RECT client{};GetClientRect(window,&client);char name[128]{};GetClassNameA(window,name,sizeof(name));
     bool popup=std::string(name).find("EMT250Presets-")==0;
     if(popup){x=int(std::lround(double(x)*client.right/390));y=int(std::lround(double(y)*client.bottom/710));}
-    else{double zoom=std::min(client.right/958.,client.bottom/371.);x=int(std::lround((client.right-958*zoom)/2+x*zoom));y=int(std::lround((client.bottom-371*zoom)/2+y*zoom));}
+    else{double zoom=std::min(client.right/958.,client.bottom/403.);x=int(std::lround((client.right-958*zoom)/2+x*zoom));y=int(std::lround((client.bottom-403*zoom)/2+(y+32)*zoom));}
     SendMessage(window, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(x, y));
     SendMessage(window, WM_LBUTTONUP, 0, MAKELPARAM(x, y));
     pump();
@@ -55,13 +55,13 @@ static void expectPaint(HWND window) {
     auto previous = SelectObject(memory, bitmap);
     FillRect(memory, &bounds, reinterpret_cast<HBRUSH>(GetStockObject(WHITE_BRUSH)));
     SendMessage(window, WM_PRINTCLIENT, reinterpret_cast<WPARAM>(memory), PRF_CLIENT);
-    double zoom=std::min(bounds.right/958.,bounds.bottom/371.);double ox=(bounds.right-958*zoom)/2,oy=(bounds.bottom-371*zoom)/2;
-    COLORREF panel=GetPixel(memory,int(ox+800*zoom),int(oy+40*zoom));
-    COLORREF rack=GetPixel(memory,int(ox+853*zoom),int(oy+20*zoom));
+    double zoom=std::min(bounds.right/958.,bounds.bottom/403.);double ox=(bounds.right-958*zoom)/2,oy=(bounds.bottom-403*zoom)/2;
+    COLORREF panel=GetPixel(memory,int(ox+800*zoom),int(oy+72*zoom));
+    COLORREF rack=GetPixel(memory,int(ox+853*zoom),int(oy+52*zoom));
     bool painted=panel!=CLR_INVALID&&rack!=CLR_INVALID&&GetRValue(panel)<170&&GetRValue(rack)>45&&GetRValue(rack)>GetGValue(rack)*1.5;
     SelectObject(memory, previous);
     static bool captured=false;
-    if(!captured&&bounds.right==1198&&bounds.bottom==464){
+    if(!captured&&bounds.right==1198&&bounds.bottom==504){
         if(const char*path=std::getenv("EMT250_TEST_IMAGE")){
             BITMAPINFO info{};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=bounds.right;info.bmiHeader.biHeight=bounds.bottom;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
             std::vector<unsigned char> pixels(size_t(bounds.right)*bounds.bottom*4);
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
             require(view->queryInterface(IPlugViewContentScaleSupport::iid,reinterpret_cast<void**>(&contentScale))==kResultOk,"content scale interface");
             require(contentScale->setContentScaleFactor(1.25f)==kResultOk,"125% before frame and attachment");
             ViewRect dpiSize;view->getSize(&dpiSize);
-            require(dpiSize.getWidth()==1198&&dpiSize.getHeight()==464,"125% physical dimensions before frame");
+            require(dpiSize.getWidth()==1198&&dpiSize.getHeight()==504,"125% physical dimensions before frame");
             auto frame=new HostFrame;
             require(view->setFrame(frame)==kResultOk,"host frame");
             require(contentScale->setContentScaleFactor(1.f)==kResultOk&&frame->requests==1,"resize negotiation with host");
@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
             require(view->onSize(&empty) != kResultOk, "reject empty rectangle");
             // The host container is already positioned in its FX panel. ViewRect origins
             // must not be applied a second time to the native child.
-            ViewRect requested{282, 125, 1240, 496};
+            ViewRect requested{282, 125, 1240, 528};
             require(view->onSize(&requested) == kResultOk, "position before attachment");
             require(view->attached(host, kPlatformTypeHWND) == kResultOk, "attach editor");
             HWND editor = GetWindow(host, GW_CHILD);
@@ -154,12 +154,12 @@ int main(int argc, char** argv) {
             SetWindowLongPtrA(editor, GWLP_USERDATA, 12345);
             expectPaint(editor);
             SetWindowLongPtrA(editor, GWLP_USERDATA, 0);
-            ViewRect moved{20, 30, 978, 401};
+            ViewRect moved{20, 30, 978, 433};
             require(view->onSize(&moved) == kResultOk, "position after attachment");
             expectRect(editor, host, moved);
             ViewRect actual;
             require(view->getSize(&actual) == kResultOk && actual.left == moved.left &&
-                    actual.top == moved.top && actual.getWidth() == 958 && actual.getHeight() == 371,
+                    actual.top == moved.top && actual.getWidth() == 958 && actual.getHeight() == 403,
                     "reported and native rectangles agree");
             if(pass==0){
                 require(view->canResize()==kResultTrue,"host may resize the panel to fit available space");
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
                     click(editor,208,325);
                     require(contentScale->setContentScaleFactor(factor)==kResultOk,"change display scale");
                     ViewRect scaledSize;view->getSize(&scaledSize);
-                    require(scaledSize.getWidth()==std::lround(958*factor)&&scaledSize.getHeight()==std::lround(371*factor),"physical dimensions at requested scale");
+                    require(scaledSize.getWidth()==std::lround(958*factor)&&scaledSize.getHeight()==std::lround(403*factor),"physical dimensions at requested scale");
                     expectRect(editor,host,scaledSize);expectPaint(editor);
                     click(editor,208,325);
                     require(controller->getParamNormalized(1)==0.,"reset mode through scaled control");
@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
             expectPaint(editor);click(editor,208,325);require(controller->getParamNormalized(1)==0.,"input in resized panel");
             require(contentScale->setContentScaleFactor(1.25f)==kResultOk,"125% while attached");
             ViewRect scaled;view->getSize(&scaled);expectRect(editor,host,scaled);expectPaint(editor);
-            require(scaled.getWidth()==1198&&scaled.getHeight()==464,"125% attached dimensions");
+            require(scaled.getWidth()==1198&&scaled.getHeight()==504,"125% attached dimensions");
             float left[256]{}, right[256]{}, outLeft[256]{}, outRight[256]{};
             float* input[]{left, right};
             float* output[]{outLeft, outRight};
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
             SendMessage(editor,WM_COMMAND,4,0);require(controller->getParamNormalized(2)==1.,"restore comparison A");
             SendMessage(editor,WM_COMMAND,5,0);require(controller->getParamNormalized(2)==0.,"restore comparison B");
             SendMessage(editor,WM_COMMAND,6,0);click(editor,244,10);SendMessage(editor,WM_COMMAND,7,0);require(controller->getParamNormalized(2)==0.,"copy and paste complete state");
-            click(editor,100,65);
+            click(editor,200,-16);
             // The preset browser is a top-level owned window, not a child.
             HWND found = nullptr;
             for (HWND candidate = GetTopWindow(nullptr); candidate; candidate = GetWindow(candidate, GW_HWNDNEXT)) {

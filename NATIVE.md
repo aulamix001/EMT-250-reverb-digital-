@@ -1,3 +1,7 @@
+# 0.4.1 — preset toolbar and VST2 host DPI protocol
+
+Restored the visible preset toolbar with previous/next, preset name/browser, IN, A/B, COPY/PASTE and INFO. Version and format are visible to distinguish older cached/duplicate installations. The panel stays in a 958 x 371 area below the 32-pixel toolbar; total native size 958 x 403, 125% 1198 x 504. Rendering and pointer transforms share the same fitted viewport, including the toolbar offset. VST2 advertises supportsViewDpiScaling and handles the PreSonus-compatible PreS/AeCs content-scale callback, retaining the requested scale across editor reopen. Tests exercise the preset toolbar in both formats and VST2 scale callbacks at 125%, plus the existing scale/input/state suites. These changes are validated with Wine; native REAPER behavior still needs confirmation. The screenshot supplied with this report depicts the earlier procedural artwork, so duplicate/older installations should be removed.
+
 # EMT-250 Reverb — 0.4.0 — reference-style panel
 
 The Windows VST3 and VST2 share the new panel-only layout based on the user's latest reference. Native size is 958 x 371; 125% is 1198 x 464. There is no internal top toolbar or footer in this reference. The host's own controls remain outside the plugin. Presets, A/B, COPY/PASTE, save/import and INFO are available by right-click; clicking the EMT 250 name opens the preset browser. The LEARN menu explains host MIDI/automation mapping; native MIDI learn is not implemented.

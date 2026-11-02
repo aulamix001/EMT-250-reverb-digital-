@@ -21,9 +21,9 @@ public:
     std::array<std::atomic<double>,count> parameters{};
     std::atomic<double> meter{0};
     Engine engine;
-    double sampleRate=48000;
+    double sampleRate=48000;float hostScale=0;
     std::unique_ptr<WindowsEditor> editor;
-    vst2::Rect bounds{0,0,371,958};
+    vst2::Rect bounds{0,0,403,958};
     std::array<double,count> chunk{};
     static Vst2Plugin& self(vst2::Effect* e) {return *static_cast<Vst2Plugin*>(e->object);}
     explicit Vst2Plugin(vst2::Callback callback):host(callback) {
@@ -32,14 +32,14 @@ public:
         effect.numPrograms=int(std::size(presets));effect.numParams=count;
         effect.numInputs=effect.numOutputs=2;
         effect.flags=1|16|32; // editor, replacing processor, state chunks
-        effect.object=this;effect.uniqueID=0x41323530;effect.version=400;
+        effect.object=this;effect.uniqueID=0x41323530;effect.version=401;
         effect.processReplacing=process;
         parameters[8]=1;parameters[9]=1;
         int index=0;
         for(int i=0;i<int(std::size(presets));++i)if(std::string(presets[i].name).find("Default [")==0)index=i;
         preset(index);engine.prepare(sampleRate);setBounds(nativeDpiScale());
     }
-    void setBounds(float factor){bounds.right=std::int16_t(std::lround(958*factor));bounds.bottom=std::int16_t(std::lround(371*factor));}
+    void setBounds(float factor){bounds.right=std::int16_t(std::lround(958*factor));bounds.bottom=std::int16_t(std::lround(403*factor));}
     int program()const {return std::clamp(int(std::round(parameters[0].load()*(std::size(presets)-1))),0,int(std::size(presets))-1);}
     void preset(int index) {
         index=std::clamp(index,0,int(std::size(presets))-1);
@@ -103,7 +103,7 @@ public:
         case vst2::EditOpen:{
             p.editor.reset();
             auto view=std::make_unique<WindowsEditor>([&p](int id){return id==13?p.meter.load():p.parameters[id].load();},[&p](int id,double v){p.edit(id,v);},[](){},"VST2",[&p](int width,int height){p.bounds.right=std::int16_t(width);p.bounds.bottom=std::int16_t(height);if(p.host)p.host(&p.effect,vst2::SizeWindow,width,height,nullptr,0);});
-            float factor=nativeDpiScale((HWND)ptr);view->setContentScaleFactor(factor);p.setBounds(factor);
+            float factor=p.hostScale>0?p.hostScale:nativeDpiScale((HWND)ptr);view->setContentScaleFactor(factor);p.setBounds(factor);
             if(view->attached(ptr,Steinberg::kPlatformTypeHWND)!=Steinberg::kResultOk)return 0;
             p.editor=std::move(view);if(p.host)p.host(e,vst2::SizeWindow,p.bounds.right,p.bounds.bottom,nullptr,0);return 1;}
         case vst2::EditClose:p.editor.reset();return 1;
@@ -113,10 +113,11 @@ public:
         case vst2::GetCategory:return 1;
         case vst2::GetEffectName:case vst2::GetProductString:return text("EMT-250 Reverb",64);
         case vst2::GetVendorString:return text("Aulamix",64);
-        case vst2::GetVendorVersion:return 400;
+        case vst2::GetVendorVersion:return 401;
         case vst2::GetVstVersion:return 2400;
         case vst2::GetTailSize:return vst2::Ptr(p.sampleRate*30);
-        case vst2::CanDo:if(ptr&&std::strcmp(static_cast<const char*>(ptr),"bypass")==0)return 1;return 0;
+        case 50:if(index==0x50726553&&value==0x41654373&&std::isfinite(opt)&&opt>0&&opt<32767.f/958){p.hostScale=opt;p.setBounds(opt);if(p.editor)return p.editor->setContentScaleFactor(opt)==Steinberg::kResultOk;return 1;}return 0;
+        case vst2::CanDo:if(ptr&&(std::strcmp(static_cast<const char*>(ptr),"bypass")==0||std::strcmp(static_cast<const char*>(ptr),"supportsViewDpiScaling")==0))return 1;return 0;
         default:return 0;
         }
     }

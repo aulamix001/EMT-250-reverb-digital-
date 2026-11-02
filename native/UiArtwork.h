@@ -25,12 +25,17 @@ public:
  Image chassis,caps,bellows;
  Gdiplus::PrivateFontCollection fonts;
  std::unique_ptr<Gdiplus::FontFamily> lettering;
+ std::unique_ptr<Gdiplus::Bitmap> frame;
  std::unique_ptr<Gdiplus::Bitmap> scaledBackground;int cachedWidth=0,cachedHeight=0;
  UiArtwork(){
   chassis.load(1001);caps.load(1002);bellows.load(1004);
   auto resource=FindResourceA(ghInst,MAKEINTRESOURCEA(1003),MAKEINTRESOURCEA(10));if(resource){auto data=LoadResource(ghInst,resource);fonts.AddMemoryFont(LockResource(data),SizeofResource(ghInst,resource));lettering=std::make_unique<Gdiplus::FontFamily>(L"Michroma",&fonts);if(lettering->GetLastStatus()!=Gdiplus::Ok)lettering.reset();}
  }
  ~UiArtwork()=default;
+ Gdiplus::Bitmap* frameBuffer(int width,int height){
+  if(!frame||int(frame->GetWidth())!=width||int(frame->GetHeight())!=height)frame=std::make_unique<Gdiplus::Bitmap>(width,height,PixelFormat32bppPARGB);
+  if(frame->GetLastStatus()!=Gdiplus::Ok)return nullptr;frame->SetResolution(96.f,96.f);return frame.get();
+ }
  void prepareBackground(int width,int height){
   if(width==cachedWidth&&height==cachedHeight)return;
   scaledBackground.reset();cachedWidth=width;cachedHeight=height;
@@ -53,8 +58,8 @@ public:
  static void fill(Gdiplus::Graphics&g,float x,float y,float w,float h,Gdiplus::Color c){Gdiplus::SolidBrush brush(c);g.FillRectangle(&brush,x,y,w,h);}
  static std::wstring wide(const std::string&s){if(s.empty())return {};int n=MultiByteToWideChar(CP_UTF8,0,s.data(),int(s.size()),nullptr,0);std::wstring v(n,0);MultiByteToWideChar(CP_UTF8,0,s.data(),int(s.size()),v.data(),n);return v;}
  void text(Gdiplus::Graphics&g,float x,float y,float w,float h,const std::string&s,float size,Gdiplus::Color c,bool center=true,bool panel=false){
-  auto value=wide(s);Gdiplus::FontFamily system(L"Arial");auto*family=panel&&lettering?lettering.get():&system;
-  Gdiplus::Font font(family,size,panel&&lettering?Gdiplus::FontStyleRegular:Gdiplus::FontStyleBold,Gdiplus::UnitPixel);
+  auto value=wide(s);Gdiplus::FontFamily system(L"Arial");auto*family=panel&&lettering?lettering.get():system.GetLastStatus()==Gdiplus::Ok?&system:lettering?lettering.get():Gdiplus::FontFamily::GenericSansSerif();
+  Gdiplus::Font font(family,size,(family==lettering.get()||!family->IsStyleAvailable(Gdiplus::FontStyleBold))?Gdiplus::FontStyleRegular:Gdiplus::FontStyleBold,Gdiplus::UnitPixel);
   Gdiplus::StringFormat format;format.SetAlignment(center?Gdiplus::StringAlignmentCenter:Gdiplus::StringAlignmentNear);format.SetLineAlignment(Gdiplus::StringAlignmentCenter);format.SetFormatFlags(Gdiplus::StringFormatFlagsNoWrap);
   Gdiplus::SolidBrush brush(c);g.DrawString(value.c_str(),int(value.size()),&font,Gdiplus::RectF(x,y,w,h),&format,&brush);
  }

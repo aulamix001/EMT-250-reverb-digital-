@@ -4,7 +4,7 @@ Fixed a reproduced VST3 parameter feedback defect: repeated host messages for th
 
 The regression test failed on 0.4.1 and now covers held mouse movement with audio processing, repeated unchanged preset echoes, float-rounded preset values, copy/paste after audio blocks, and genuine host automation. All faders can move visually; controls unused by a DSP mode continue to have no effect on that mode's audio.
 
-The floating browser is explicitly owned by the host root window and activated on open. DPI renegotiation no longer destroys it. Its body and search field are black, with a custom draggable header. Tests verify it remains visible through host scale changes and still searches/selects presets. The main panel artwork, sprites, colors and layout are unchanged; only the version label changes.
+The floating browser is explicitly owned by the host root window and activated on open. DPI renegotiation no longer destroys it. Its body and search field are black, with a custom draggable header. Tests verify it remains visible through host scale changes and still searches/selects presets. The main panel artwork, sprites, colors and layout are unchanged; only the version label changes. Main painting now composes into a reusable native-resolution offscreen bitmap and presents one complete frame, avoiding visible clear/background/control phases during mouse updates.
 
 # 0.4.1 — preset toolbar and VST2 host DPI protocol
 

@@ -60,6 +60,9 @@ static void expectPaint(HWND window) {
     COLORREF panel=GetPixel(memory,int(ox+800*zoom),int(oy+72*zoom));
     COLORREF rack=GetPixel(memory,int(ox+853*zoom),int(oy+52*zoom));
     bool painted=panel!=CLR_INVALID&&rack!=CLR_INVALID&&GetRValue(panel)<170&&GetRValue(rack)>45&&GetRValue(rack)>GetGValue(rack)*1.5;
+    int lettering=0;
+    for(int yy=5;yy<27&&lettering<8;++yy)for(int xx=70;xx<380&&lettering<8;xx+=2){COLORREF pixel=GetPixel(memory,int(ox+xx*zoom),int(oy+yy*zoom));if(GetRValue(pixel)>130&&GetGValue(pixel)>130&&GetBValue(pixel)>130)++lettering;}
+    require(lettering>=8,"preset toolbar lettering remains visible with native framebuffer");
     SelectObject(memory, previous);
     static bool captured=false;
     if(!captured&&bounds.right==1198&&bounds.bottom==504){

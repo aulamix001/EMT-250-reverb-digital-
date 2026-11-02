@@ -1,8 +1,9 @@
 """Package a cross-built Windows VST3 into its standard bundle layout."""
-import pathlib, struct, sys, zipfile
+import pathlib, re, struct, sys, zipfile
 binary = pathlib.Path(sys.argv[1])
 root = pathlib.Path(__file__).resolve().parent.parent
-output = root / 'releases/EMT-250-Reverb-0.2.1-Windows-x64.zip'
+version = re.search(r'project\(Aulamix250 VERSION ([0-9.]+)', (root / 'CMakeLists.txt').read_text()).group(1)
+output = root / f'releases/EMT-250-Reverb-{version}-Windows-x64.zip'
 data = binary.read_bytes()
 assert data[:2] == b'MZ', 'Not a PE file'
 pe = struct.unpack_from('<I', data, 0x3c)[0]

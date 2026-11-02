@@ -1,6 +1,7 @@
-EMT-250 Reverb — VST3 Windows 64 bits (experimental 0.2.1)
+EMT-250 Reverb — VST3 Windows 64 bits (experimental 0.2.2)
 
 1. Feche a DAW.
+   Substitua a pasta EMT-250 Reverb.vst3 antiga pela versão deste ZIP.
 2. Copie a pasta inteira EMT-250 Reverb.vst3 para:
    C:\Program Files\Common Files\VST3\
 3. Abra sua DAW de 64 bits e faça uma nova busca de plugins VST3.
@@ -19,6 +20,8 @@ continuam provisórios porque as fotos não mostram esse canal.
 
 Compilado por cross-compilation MinGW para Windows x86-64.
 Não foi executado em Windows ou validado em uma DAW Windows neste ambiente.
+Foi executado via Wine, incluindo testes de posição, pintura e reabertura do editor.
+No REAPER, limpe o cache VST e refaça a busca após substituir a versão antiga.
 Consulte NATIVE.md para limitações e evidências de validação Linux.
 
 Remova a pasta antiga Aulamix250.vst3 para evitar duplicatas e refaca a busca de plugins.

@@ -1,3 +1,9 @@
+# EMT-250 Reverb — 0.2.2
+
+Windows editor host compatibility fix: apply the host's IPlugView::onSize rectangle to the HWND, honor positions received before attachment, redraw immediately, and destroy previous child windows on reattachment. Handle WM_PRINTCLIENT so host-requested rendering produces the panel. Reject null platform/invalid parent and size arguments. The power arrow is drawn with GDI to avoid ANSI/UTF-8 corruption. Plugin class and parameter IDs remain unchanged.
+
+The new `WindowsHost` regression test loads the built VST3, attaches to a hidden host at a nonzero FX-panel offset, shows and moves the editor, checks rendered pixels, exercises six modes, a fader and preset search/selection, and detaches/reattaches across three editor lifetimes. On Windows, build target `windows-host-test` before running CTest. Cross-build tests run with `CMAKE_CROSSCOMPILING_EMULATOR` set to Wine. Version 0.2.1 fails the offset regression; 0.2.2 is validated through Wine and the Linux SDK validator. The specific reported REAPER session has not been reproduced in native Windows; these checks do not establish complete REAPER compatibility.
+
 # EMT-250 Reverb — 0.2.1
 
 Renamed the DAW factory name, Windows bundle, panel and preset browser to EMT-250 Reverb. Class ID and parameter IDs unchanged to preserve existing sessions and presets. Remove the old Aulamix250.vst3 installation before rescanning. Current bundle: EMT-250 Reverb.vst3.

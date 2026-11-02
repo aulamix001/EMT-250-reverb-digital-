@@ -27,6 +27,9 @@ jobs:
       - run: node scripts/native-presets.js
       - run: cmake -S . -B build -DVST3_SDK_ROOT=${{ github.workspace }}/sdk -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build --config Release --target Aulamix250 dsp-test --parallel 2
+      - name: Build Windows editor host regression test
+        if: runner.os == 'Windows'
+        run: cmake --build build --config Release --target windows-host-test --parallel 2
       - run: ctest --test-dir build -C Release --output-on-failure
       - uses: actions/upload-artifact@v4
         with:

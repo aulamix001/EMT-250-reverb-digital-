@@ -1,0 +1,56 @@
+EMT-250 Reverb 0.2.2 — correção de integração do editor Windows
+
+Defeitos confirmados na 0.2.1:
+- onSize somente alterava um retângulo em memória; o HWND ficava em (0,0), ignorando posição/tamanho informados pelo host.
+- WM_PRINTCLIENT não pintava o painel.
+- reanexação da mesma view não removia a janela anterior.
+
+Correções:
+- Aplicar posição e dimensões do host antes/depois de attached e repintar.
+- Atender WM_PRINTCLIENT, validar argumentos e limpar janela anterior na reanexação.
+- Desenhar seta com GDI, evitando texto UTF-8 interpretado como ANSI.
+- Manter IDs do plugin e dos parâmetros para preservar sessões.
+
+Validação desta compilação:
+- Teste de regressão da versão anterior: falha ao respeitar offset antes de attached.
+- CTest Windows via Wine 10: DSP e WindowsHost passaram (2/2).
+- WindowsHost: posição antes/depois de attached, host inicialmente oculto, pintura em DC do host, seis botões de modo e áudio finito, fader, busca e seleção de preset, detach/reattach e três ciclos de vida do editor.
+- CTest Linux: DSP passou (1/1).
+- Catálogo: 24 passaram, 0 falharam.
+- SDK Steinberg Linux: 47 passaram, 0 falharam.
+
+Limites: não foi executado em Windows nativo ou na sessão REAPER da captura. Corrigir defeitos confirmados não prova que toda causa possível de painel branco foi eliminada nesse host. Diálogos de arquivo e reprodução auditiva na DAW não foram testados. O DSP e as demais limitações experimentais continuam descritos em NATIVE.md.
+
+Instalação: feche o REAPER, substitua a pasta inteira EMT-250 Reverb.vst3 em C:\Program Files\Common Files\VST3\ pela deste ZIP. Remova Aulamix250.vst3 antigo. No REAPER, limpe o cache VST e refaça a busca. A versão no rodapé do painel deve ser 0.2.2.
+
+Resultado atual do CTest Windows:
+Internal ctest changing into directory: /workspace/build-windows
+Test project /workspace/build-windows
+    Start 1: DSP
+1/2 Test #1: DSP ..............................   Passed    5.58 sec
+    Start 2: WindowsHost
+2/2 Test #2: WindowsHost ......................   Passed   10.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =  15.58 sec
+
+Regressão anterior (0.2.1):
+wine: Call from 00006FFFFF3FCF77 to unimplemented function ole32.dll.CoInitialize, aborting
+wine: Unimplemented function ole32.dll.CoInitialize called at address 00006FFFFF3FCF77 (thread 00a8), starting debugger...
+PASS module argument
+PASS load module
+PASS InitDll
+PASS factory export
+PASS class info
+PASS instantiate
+PASS initialize
+PASS controller
+PASS processor
+PASS setup processing
+PASS host window
+PASS create editor
+PASS host positions view before attach
+PASS attach editor
+PASS editor HWND
+FAIL child follows host supplied offset before attach

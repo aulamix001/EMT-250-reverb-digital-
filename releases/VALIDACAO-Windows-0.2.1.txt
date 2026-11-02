@@ -1,0 +1,11 @@
+EMT-250 Reverb 0.2.1 — Windows x64
+
+Recompilado do checkout com Steinberg VST3 SDK v3.8.0_build_66 e MinGW-w64 GCC 14.2.
+24 testes do catálogo: passaram.
+DSP Linux e executável Windows via Wine: 6 modos com resposta finita não nula, bypass estéreo exato.
+Validador Steinberg Linux: 47 passaram, 0 falharam.
+Teste do VST3 Windows em host automatizado via Wine 10/Xvfb: carregamento, inicialização, editor 1186x570, seis botões de modo e áudio finito, alavanca, navegador, busca e seleção de preset, três ciclos de abertura/fechamento e descarregamento passaram.
+Não foi testado em Windows nativo ou em DAW comercial. Não garante compatibilidade com toda DAW.
+DSP aproximado original, não emulação exata EMT/UAD. MIDI learn não implementado; favoritos duram a sessão do editor. Tempos R provisórios em três presets, conforme NATIVE.md.
+
+Instalação: feche a DAW, extraia o ZIP e copie a pasta inteira EMT-250 Reverb.vst3 para C:\Program Files\Common Files\VST3\. Remova Aulamix250.vst3 antigo e refaça a busca VST3 na DAW de 64 bits.
